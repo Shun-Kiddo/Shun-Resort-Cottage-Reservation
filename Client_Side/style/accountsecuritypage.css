@@ -1,0 +1,54 @@
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+    background: 
+        linear-gradient(rgba(0, 83, 116, 0.5), rgba(0, 83, 116, 0.5)), 
+        url('/image/beach.webp') no-repeat center center/cover; 
+}
+.container {
+    height: 500px; /* Fixed height */
+    overflow-y: auto; /* Scrollable content */
+    max-width: 700px;
+    margin: auto;
+    background: #000000a8;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    
+}
+
+h1 {
+    font-size: 25px;
+    color: #CFDA77;
+    text-align: center;
+}
+h2 {
+    color:#CFDA77;
+    margin-top: 25px;
+    font-size: 20px;
+}
+p {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #ffffff;
+}
+.copy-right a{
+    text-decoration: none;
+    color:#5FADE5
+}
+ul {
+    margin-top: 10px;
+}
+li {
+    margin-bottom: 8px;
+}
+footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 14px;
+    color: #666;
+}

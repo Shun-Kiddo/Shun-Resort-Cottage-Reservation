@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/Client_Side/style/homepage.css">
+  <title>HomePage - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png">
+</head>
+  <body>
+    
+<nav class="navbar">
+  <!-- Logo -->
+  <div class="logo">S<span class="highlight">R</span></div>
+  <!-- Hamburger Icon -->
+  <div class="hamburger" id="hamburger">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <!--Nav Links-->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="/Client_Side/html/homepage.html"><i class="fa-solid fa-house mobile-icon"></i> Home</a></li>
+    <li><a href="/Client_Side/html/errorpage.html"><i class="fa-solid fa-campground mobile-icon"></i> Cottage</a></li>
+    <li><a id="openContactNav"><i class="fa-solid fa-phone mobile-icon"></i>Contact</a></li>
+    <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket mobile-icon"></i> Logout</a></li>
+  </ul>
+</nav>
+
+<!-- Slider Section --> 
+<div class="slider">
+  <!-- Slide 1 -->
+  <div class="slide active" style="background-image: url(/image/beach.webp);"></div>
+  <!-- Slide 2 -->
+  <div class="slide" style="background-image: url(/image/beach2.webp);"></div>
+  <!-- Slide 3 -->
+  <div class="slide" style="background-image: url('/image/beach3.webp');"></div>
+
+  <!-- Text Content -->
+  <div class="title">
+    <h1>SHUN <span class="highlight">RESORT</span></h1>
+  </div>
+
+  <!-- Mouse -->
+  <div class="mouse-scroll"></div>
+  <!-- Dots -->
+  <div class="dots">  
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>  
+
+<!-- Search Item -->
+<div class="search-container">
+  <!-- Cottage Type -->
+  <div class="cottage-type" id="cottage">
+    <label for="cottage-type-label">Cottage Type</label>
+      <select id="cottage-type-label" name="cottage-type">
+        <option value="wood-type">Wood Type</option>
+        <option value="concrete-type">Concrete Type</option>
+      </select>
+  </div>
+
+  <!-- Person Capacity -->
+  <div class="person-capacity">
+    <label for="person-capacity-label">Person Capacity</label>
+      <select id="person-capacity-label" name="person-capacity">
+        <option value="2-person">2 Person</option>
+        <option value="5-person">5 Person</option>
+        <option value="10-person">10 Person</option>
+      </select>
+  </div>
+  
+  <!-- Search Button -->
+  <button class="search-button">Search</button>
+</div>
+
+<!-- Cottage Container -->
+<div class="cottage-container">
+  <h2 class="cottage-container-header">Cottage</h2>
+  <p class="cottage-container-subheader">Find the right cottage for you</p>
+  <div class="coverflow-container">
+      <button class="nav-btn left">&#10094;</button>
+      <div class="coverflow-wrapper">
+        <div class="coverflow-item active">
+          <img src="/image/cabin1.jpg"alt="Beach">
+          <a href="/Client_Side/html/errorpage.html" class="circle-btn" target="_blank"></a>
+        </div>
+        <div class="coverflow-item">
+          <img src="/image/cabin3.jpg" alt="Mountains">
+          <a href="/Client_Side/html/errorpage.html"class="circle-btn" target="_blank"></a>
+        </div>
+        <div class="coverflow-item">
+          <img src="/image/cabin2.jpg" alt="City">
+          <a href="/Client_Side/html/errorpage.html" class="circle-btn" target="_blank"></a>
+        </div>
+      </div>
+      <button class="nav-btn right">&#10095;</button>
+    </div>
+    <p class="view-more"><a href="/Client_Side/html/errorpage.html" target="_blank">View More</a></p>
+</div>
+
+<!-- Header Parallax -->
+<div class="header-parallax" id="header_parallax"></div>
+<!-- Contact Section -->
+<div class="contact-container">
+    <!-- Skilled Employees Boxes -->
+    <div class="contact-box">
+      <div class="box-item">
+        <h2><a href="#" id="openPartners">3</a></h2><br>
+        <p>Bussines Partner</p>
+      </div>
+    </div>
+
+    <!--Contact Description-->
+    <div class="contact-description">
+      <h2 class="contact-header">Get your best cottage now!</h2>
+      <p class="line"></p>
+      <p class="contact-subheader">Contact us for more information about our cottages and services. We're here to help you plan your perfect getaway!</p>
+    </div>
+
+    <!-- Contact Button -->
+    <div class="contact-button">
+      <a class="contact-btn" target="_blank" id="openContactSection">Contact Us</a>
+    </div>
+</div> 
+
+<!-- Contact Info Section --> 
+<div class="contact-info-container">
+  <!-- Left Side with Logo -->
+  <div class="info-logo">
+    <img src="/image/cottage_logo.png" alt="Logo">
+  </div>
+
+  <!-- Contact Details -->
+  <div class="info-item-left">
+    <h3>Call us</h3>
+    <p class="header-line"></p>
+    <p>Mobile: (+63)909 090 9099</p>
+
+     <!--Social Media-->
+    <h3>Social Media</h3>
+    <p class="header-line"></p>
+    <div class="social-icons">
+      <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/facebook.png" alt="Facebook"></a>
+      <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/instagram-logo.png" alt="Instagram"></a>
+      <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/tiktok.webp" alt="tiktok"></a>
+    </div>
+</div>
+
+  <!-- Address -->
+  <div class="info-item-right">
+      <div class="map">
+        <h3>Located Here!</h3>
+        <p class="header-line"></p>
+        <div class="map-bounce"id="googleMap"></div>
+      </div>
+  </div>
+</div>
+  
+<!-- Employee Modal -->
+<div class="modal" id="employeeModal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModal">&times;</span>
+    <h2 class="employee-container-header">Business Partners</h2>
+    <p>Meet the dedicated team behind Shun Resort, committed to providing you with an exceptional experience.</p>
+    <div class="employee-list">
+      <!--Jayson-->
+      <div class="employee-card">
+        <img src="/image/jayson.jpg" alt="Jayson" >
+        <h3><a href="https://www.facebook.com/Shun.Kiddo" target="_blank">Jayson Mancol</a></h3>
+        <p>Chief Executive Officer (CEO)</p>
+      </div>
+      <!--Aaliyah-->
+      <div class="employee-card">
+        <img src="/image/aaliyah.jpg" alt="Aaliyah" >
+        <h3><a href="https://www.facebook.com/biancapallones" target="_blank">Aaliyah Bianca Pallones</a></h3>
+        <p>Chief Financial Officer (CFO)</p>
+      </div>
+      <!--Nikuz-->
+      <div class="employee-card">
+        <img src="/image/nikuz.jfif" alt="Baito" target="_blank">
+        <h3><a href="https://www.facebook.com/profile.php?id=61579347625387" target="_blank">Nikuz Andrei Baito</a></h3>
+        <p>Chief Operating Officer (COO)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Contact Modal -->
+  <div class="contact-modal" id="contactModal">
+    <div class="contact-modal-content">
+      <span class="close-modal" id="closeContactModal">&times;</span>
+        <h2 class="contact-header">Contact us</h2>
+        <p class="contact-description">Contact us for more information about our cottages and services. We're here to help you plan your perfect getaway!</p>
+
+        <form class="contact-form">
+          <textarea id="contact-message" class="contact-message" placeholder="Message" required></textarea>
+          <button class="contact-send-button" type="submit">Send</button>
+        </form>
+        
+        <h2 class="Bussiness-Partner-header">Contact Person</h2>
+        <p class="partner-description">
+          You can also reach out directly to our management team for inquiries, partnerships, or reservations.
+        </p>
+        <!-- Employee List -->
+        <div class="employee-list">
+          <div class="employee-card">
+            <img src="/image/jayson.jpg" alt="Jayson">
+            <h3><a href="https://www.facebook.com/Shun.Kiddo" target="_blank">Jayson Mancol</a></h3>
+            <p>Chief Executive Officer (CEO)</p>
+          </div>
+
+          <div class="employee-card">
+            <img src="/image/aaliyah.jpg" alt="Aaliyah">
+            <h3><a href="https://www.facebook.com/biancapallones" target="_blank">Aaliyah Bianca Pallones</a></h3>
+            <p>Chief Financial Officer (CFO)</p>
+          </div>
+
+          <div class="employee-card">
+            <img src="/image/nikuz.jfif" alt="Nikuz">
+            <h3><a href="https://www.facebook.com/profile.php?id=61579347625387" target="_blank">Nikuz Andrei Baito</a></h3>
+            <p>Chief Operating Officer (COO)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+    <footer>
+      <p class="copy-right">
+        &copy; 2024 &nbsp;
+        <a href="#">Shun Resort</a>.&nbsp;All rights reserved.
+      </p>
+    </footer> 
+    <!-- Scroll to Top Circular Button -->
+    <div id="scrollBtn">
+      <svg class="progress-circle" width="60" height="60">
+        <circle class="bg" cx="30" cy="30" r="25"></circle>
+        <circle class="progress" cx="30" cy="30" r="25"></circle>
+      </svg>
+      <i class="fa-solid fa-arrow-up"></i>
+    </div>
+
+    <h1 id="welcome"></h1>
+    <script src="/Client_Side/script/homepage.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYVWfIBLgjAa1uqVshFzET-7zObqHutkQ&callback=initMap" async defer></script>
+  </body>
+</html>

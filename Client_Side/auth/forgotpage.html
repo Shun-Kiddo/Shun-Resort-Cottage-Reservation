@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/Client_Side/style/forgotpage.css">
+  <title>Forgot Password - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png">
+</head>
+<body>
+  <div class="form-box" id="formBox">
+      <!-- Email Step -->
+      <div id="emailStep">
+        <h2 class="login-account-title">Forgot Password?</h2>
+        <p class="login-account-sub-title">Enter your email, we will send you an OTP</p>
+        <form onsubmit="event.preventDefault(); sendOtp();">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <button type="submit">Send OTP</button>
+            <p class="small-text">Go back to | <a href="/Client_Side/auth/loginpage.html">Sign in</a></p>
+        </form>
+      </div>
+
+      <!-- OTP Step -->
+      <div id="otpStep" style="display:none;">
+        <h2 class="login-account-title">Verify OTP</h2>
+        <p class="login-account-sub-title">Enter the 6-digit code sent to your email</p>
+        <form onsubmit="event.preventDefault(); verifyOtp();">
+        <div class="otp-inputs">
+          <input type="text" maxlength="1" class="otp-box" id="otp1" required>
+          <input type="text" maxlength="1" class="otp-box" id="otp2" required>
+          <input type="text" maxlength="1" class="otp-box" id="otp3" required>
+          <input type="text" maxlength="1" class="otp-box" id="otp4" required>
+          <input type="text" maxlength="1" class="otp-box" id="otp5" required>
+          <input type="text" maxlength="1" class="otp-box" id="otp6" required>
+        </div>
+            <button type="submit">Verify OTP</button>
+            <button type="button" class="resend-btn" onclick="resendOtp()">Resend OTP</button>
+        </form>
+      </div>
+  </div>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+  <script src="/Client_Side/script/forgotpage.js"></script>
+</body>
+</html>

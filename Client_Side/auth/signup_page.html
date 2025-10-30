@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/Client_Side/style/signup_page.css">
+<title>Create Account - Shun Resort</title>
+<link rel="icon" type="image/png" href="/image/cottage_logo.png">
+</head>
+    <body>
+        <!-- Left Side Text -->
+        <div class="left-text">
+          <h1>
+            <a href="/Client_Side/html/landingpage.html">
+              WELCOME TO SHUN 
+              <span class="highlight">
+                RESORT
+              </span>
+            </a>
+          </h1>
+          <p>
+            SIGN UP TODAY TO<br>
+            RESERVE COTTAGE<br>
+            EARLY.
+          </p>
+          <p class="line"></p>
+
+          <!-- Circle Logos -->
+          <div class="circle-container">
+            <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/facebook.png" alt="Facebook" ></a>
+            <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/instagram-logo.png" alt="Instagram" ></a>
+            <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/tiktok.webp" alt="tiktok" ></a>
+          </div>
+        </div>
+
+        <!-- Right Side Signup Form -->
+        <div class="form-box">
+            <h2 class="create-account-title">CREATE YOUR ACCOUNT</h2>
+            <form>
+              <label for="fullname">Full Name</label>
+              <input type="text" id="fullname" placeholder="Enter your full name" required>
+              <label for="email">Email Address</label>
+              <input type="email" id="email" placeholder="Enter your email" required>
+
+              <label for="password">Password</label>
+              <div class="password-container">
+                <input type="password" id="password" placeholder="Enter your password" required>
+                <i class="fa-solid fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+              </div>
+
+              <button type="submit">Sign Up</button>
+            </form>
+            <p class="small-text">Already have an account? | <a href="/Client_Side/auth/loginpage.html">Sign In</a></p>
+            </div>
+        </div>
+        <script src="/Client_Side/script/signup_page.js"></script>
+    </body>
+</html>
