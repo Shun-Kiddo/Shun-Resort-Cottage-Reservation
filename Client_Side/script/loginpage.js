@@ -18,8 +18,8 @@ function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
   toast.style.background = isError
-    ? "linear-gradient(135deg, #e63946, #d62828)"  // red error
-    : "linear-gradient(135deg, #0077b6, #00b4d8)"; // resort blue
+    ? "linear-gradient(135deg, #e63946, #d62828)"  
+    : "linear-gradient(135deg, #0077b6, #00b4d8)";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
@@ -53,6 +53,7 @@ document.querySelector("form").addEventListener("submit", async (e) => {
     if (response.ok) {
       localStorage.setItem("authToken", result.token);
       localStorage.setItem("userEmail", result.user.email);
+      localStorage.setItem("userId", result.user.id);
       document.querySelector("form").reset();
       showToast("✅ Login successful! Redirecting...");
       setTimeout(() => window.location.replace("/Client_Side/html/homepage.html"), 1000);

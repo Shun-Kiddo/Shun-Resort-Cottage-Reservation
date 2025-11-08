@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/Admin_Side/admin_style/admin_cottages.css" />
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>S<span class="highlight">R</span></h2>
+      <p>Shun <span class="highlight">Resort</span></p>
+    </div>
+    <ul class="menu">
+      <li><a href="/Admin_Side/admin_html/admin_dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="#" class="active"><i class="fa-solid fa-bed"></i> Cottages</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_user.html"><i class="fa-solid fa-user"></i> Users</a></li>
+      <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+      <li><a href="#"><i class="fa-solid fa-money-bill-wave"></i> Payments</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+    </ul>
+    <footer>
+      <p>&copy; 2025 Shun Resort. All rights reserved.</p>
+    </footer>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+<main class="main-content">
+  <header class="topbar">
+    <h1>Cottages</h1>
+    <p>Manage your resort system efficiently</p>
+  </header>
+
+<!-- === Create Cottage Form === -->
+<form class="create-cottage" enctype="multipart/form-data">
+<input type="text" name="name" placeholder="Cottage Name (e.g., Cabin W-1)" required>
+
+<select name="type" required>
+  <option value="">Select Type</option>
+  <option value="Wood">Wood</option>
+  <option value="Concrete">Concrete</option>
+  <option value="Bamboo">Bamboo</option>
+</select>
+
+<input type="number" name="capacity" placeholder="Capacity" min="1" required>
+<input type="number" name="price" placeholder="Price (₱)" min="0" required>
+
+  <select name="availability" required style="display: none;">
+    <option value="Available">Available</option>
+    <option value="Occupied">Occupied</option>
+  </select>
+  <!-- === Image Upload === -->
+  <label for="imageInput" class="upload-label">Upload Image</label>
+  <input type="file" name="image" id="imageInput" accept="image/*" required  style="display: none;">
+
+  <!-- Preview -->
+  <div class="image-preview">
+    <img id="previewImg" src="" alt="Image Preview" style="max-width: 150px; border-radius: 10px; margin-top: 10px; display: none;">
+  </div>
+
+  <button class="create-cottage-button" type="submit">Create</button>
+</form>
+
+  <!-- === Cottage List === -->
+  <div class="cottage-container">
+    <div class="cottage-grid">
+      <!-- Card-->
+      <div class="cottage-card">
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- === Update Cottage Modal === -->
+<div id="updateModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>Update Cottage</h2>
+
+    <form id="updateForm" enctype="multipart/form-data">
+      <input type="hidden" id="update_id" name="id">
+
+      <select id="update_availability" name="availability" required>
+        <option value="Available">Available</option>
+        <option value="Occupied">Occupied</option>
+      </select>
+
+      <label for="update_name">Cottage Name</label>
+      <input type="text" id="update_name" name="name" required>
+
+      <label for="update_type">Type</label>
+      <select id="update_type" name="type" required>
+        <option value="Wood">Wood</option>
+        <option value="Concrete">Concrete</option>
+        <option value="Bamboo">Bamboo</option>
+      </select>
+
+      <label for="update_capacity">Capacity</label>
+      <input type="number" id="update_capacity" name="capacity" min="1" required>
+
+      <label for="update_price">Price (₱)</label>
+      <input type="number" id="update_price" name="price" min="0" required>
+
+      <label for="update_image">Change Image (optional)</label>
+      <input type="file" id="update_image" name="image" accept="image/*">
+
+      <!-- Image Preview -->
+      <div class="image-preview">
+        <img id="update_preview" src="" alt="Preview" style="display: none;">
+      </div>
+
+      <div class="modal-buttons">
+        <button type="submit" class="btn-save">Save Changes</button>
+        <button type="button" class="btn-cancel" onclick="closeUpdateModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <script src="/Admin_Side/admin_script/admin_cottage.js"></script>
+</body>
+</html>

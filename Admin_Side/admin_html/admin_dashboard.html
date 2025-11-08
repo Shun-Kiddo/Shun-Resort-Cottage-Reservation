@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/Admin_Side/admin_style/admin_dashboard.css" />
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>S<span class="highlight">R</span></h2>
+      <p>Shun <span class="highlight">Resort</span></p>
+    </div>
+    <ul class="menu">
+      <li><a href="#" class="active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_cottage.html"><i class="fa-solid fa-campground"></i> Cottages</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_user.html"><i class="fa-solid fa-user"></i> Users</a></li>
+      <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+      <li><a href="#"><i class="fa-solid fa-money-bill-wave"></i> Payments</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+    </ul>
+    <footer>
+      <p class="copy-right">
+        &copy; 2024&nbsp;
+        <a href="#">Shun Resort</a>.&nbsp;All rights reserved.
+      </p>
+    </footer>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="topbar">
+      <h1>Dashboard</h1>
+      <p>Manage your resort system efficiently</p>
+    </header>
+
+    <section class="dashboard-cards">
+      <a href="/Admin_Side/admin_html/admin_cottage.html" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <i class="fa-solid fa-campground"></i>
+          <h3>Available Cottages</h3>
+          <p id="available-cottage">0</p>
+        </div>
+      </a> 
+      <a href="/Admin_Side/admin_html/admin_user.html " style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <i class="fa-solid fa-user"></i>
+          <h3>Total Visitor</h3>
+          <p id="total-user">0</p>
+        </div>
+      </a>
+      
+      <a href="" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <i class="fa-solid fa-calendar-check"></i>
+          <h3>Bookings Today</h3>
+          <p id="total-book">0</p>
+        </div>
+      </a>
+      <a href="#" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <i class="fa-solid fa-money-bill"></i>
+          <h3>Total Revenue</h3>
+          <p id="total-revenue">0</p>
+        </div>
+      </a>
+    </section>
+    <div class="message-header">
+        <h2>Messages</h2>
+    </div>
+    <section class="messages-section">
+        <div class="message-info">
+          <div class="left-info">
+            <p class="sender">
+              <i class="fa-solid fa-user"></i>
+              Jayson Mancol / home
+            </p>
+            <p class="time">01/01/0001</p>
+          </div>
+        </div>
+        <div class="message-body">
+          <p>Hi, can I ask about the available cottages this weekend?</p>
+        </div>
+    </section>
+  </main>
+  <script src="/Admin_Side/admin_script/admin_dashboard.js"></script>
+</body>
+</html>

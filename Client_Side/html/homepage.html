@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/Client_Side/style/homepage.css">
-  <title>HomePage - Shun Resort</title>
+  <title>Home Page - Shun Resort</title>
   <link rel="icon" type="image/png" href="/image/cottage_logo.png">
 </head>
   <body>
@@ -23,8 +23,8 @@
   <!--Nav Links-->
   <ul class="nav-links" id="navLinks">
     <li><a href="/Client_Side/html/homepage.html"><i class="fa-solid fa-house mobile-icon"></i> Home</a></li>
-    <li><a href="/Client_Side/html/errorpage.html"><i class="fa-solid fa-campground mobile-icon"></i> Cottage</a></li>
-    <li><a id="openContactNav"><i class="fa-solid fa-phone mobile-icon"></i>Contact</a></li>
+    <li><a href="/Client_Side/html/cottagepage.html"><i class="fa-solid fa-campground mobile-icon"></i> Cottage</a></li>
+    <li><a href="#" id="openContactNav"><i class="fa-solid fa-phone mobile-icon"></i>Contact</a></li>
     <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket mobile-icon"></i> Logout</a></li>
   </ul>
 </nav>
@@ -55,27 +55,19 @@
 
 <!-- Search Item -->
 <div class="search-container">
-  <!-- Cottage Type -->
   <div class="cottage-type" id="cottage">
     <label for="cottage-type-label">Cottage Type</label>
       <select id="cottage-type-label" name="cottage-type">
-        <option value="wood-type">Wood Type</option>
-        <option value="concrete-type">Concrete Type</option>
       </select>
   </div>
 
-  <!-- Person Capacity -->
   <div class="person-capacity">
     <label for="person-capacity-label">Person Capacity</label>
       <select id="person-capacity-label" name="person-capacity">
-        <option value="2-person">2 Person</option>
-        <option value="5-person">5 Person</option>
-        <option value="10-person">10 Person</option>
       </select>
   </div>
-  
-  <!-- Search Button -->
-  <button class="search-button">Search</button>
+
+  <button id="searchBtn" class="search-button">Search</button>
 </div>
 
 <!-- Cottage Container -->
@@ -100,7 +92,7 @@
       </div>
       <button class="nav-btn right">&#10095;</button>
     </div>
-    <p class="view-more"><a href="/Client_Side/html/errorpage.html" target="_blank">View More</a></p>
+    <p class="view-more"><a href="/Client_Side/html/cottagepage.html" target="_blank">View More</a></p>
 </div>
 
 <!-- Header Parallax -->
@@ -208,23 +200,23 @@
         </p>
         <!-- Employee List -->
         <div class="employee-list">
-          <div class="employee-card">
-            <img src="/image/jayson.jpg" alt="Jayson">
-            <h3><a href="https://www.facebook.com/Shun.Kiddo" target="_blank">Jayson Mancol</a></h3>
-            <p>Chief Executive Officer (CEO)</p>
-          </div>
+            <div class="employee-card">
+                <img src="/image/jayson.jpg" alt="Jayson">
+                <h3><a href="https://www.facebook.com/messages/e2ee/t/29296223043326238" target="_blank">Jayson Mancol</a></h3>
+                <p>Chief Executive Officer (CEO)</p>
+            </div>
 
-          <div class="employee-card">
-            <img src="/image/aaliyah.jpg" alt="Aaliyah">
-            <h3><a href="https://www.facebook.com/biancapallones" target="_blank">Aaliyah Bianca Pallones</a></h3>
-            <p>Chief Financial Officer (CFO)</p>
-          </div>
+            <div class="employee-card">
+                <img src="/image/aaliyah.jpg" alt="Aaliyah">
+                <h3><a href="https://www.facebook.com/messages/e2ee/t/7223087021126353" target="_blank">Aaliyah Bianca Pallones</a></h3>
+                <p>Chief Financial Officer (CFO)</p>
+            </div>
 
-          <div class="employee-card">
-            <img src="/image/nikuz.jfif" alt="Nikuz">
-            <h3><a href="https://www.facebook.com/profile.php?id=61579347625387" target="_blank">Nikuz Andrei Baito</a></h3>
-            <p>Chief Operating Officer (COO)</p>
-          </div>
+            <div class="employee-card">
+                <img src="/image/nikuz.jfif" alt="Nikuz">
+                <h3><a href="https://www.facebook.com/messages/e2ee/t/9301632883295174" target="_blank">Nikuz Andrei Baito</a></h3>
+                <p>Chief Operating Officer (COO)</p>
+            </div>  
         </div>
       </div>
     </div>

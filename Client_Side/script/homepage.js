@@ -7,7 +7,21 @@ document.onkeydown = e => {
   }
 };
 */
-// Authentication check
+
+// === Active Link Based on URL ===
+const links = document.querySelectorAll(".nav-links a");
+const currentPath = window.location.pathname;
+
+links.forEach(link => {
+  if (link.getAttribute("href") === currentPath) {
+    link.classList.add("active");
+  }
+  link.addEventListener("click", () => {
+    links.forEach(l => l.classList.remove("active"));
+    link.classList.add("active");
+  });
+});
+
 const token = localStorage.getItem("authToken");
 
 if (!token) {
@@ -158,6 +172,48 @@ nextBtn.addEventListener('click', () => {
 // init
 updateCoverflow();
 
+//=================Search cottages======================
+document.addEventListener("DOMContentLoaded", async () => {
+  const cottageTypeSelect = document.getElementById("cottage-type-label");
+  const capacitySelect = document.getElementById("person-capacity-label");
+
+  // Fetch cottage types
+  try {
+    const res = await fetch("http://localhost:5000/cottage-types");
+    const types = await res.json();
+
+    cottageTypeSelect.innerHTML = `<option value="" disabled selected hidden>Cottage Type</option>`;
+    types.forEach(row => {
+      cottageTypeSelect.innerHTML += `<option value="${row.type}">${row.type}</option>`;
+    });
+  } catch (error) {
+    console.error("Error loading cottage types:", error);
+  }
+
+  // Fetch person capacities
+  try {
+    const res = await fetch("http://localhost:5000/person-capacity");
+    const capacities = await res.json();
+
+    capacitySelect.innerHTML = `<option value="" disabled selected hidden>Person Capacity</option>`;
+    capacities.forEach(row => {
+      capacitySelect.innerHTML += `<option value="${row.capacity}">${row.capacity} Person</option>`;
+    });
+  } catch (error) {
+    console.error("Error loading capacities:", error);
+  }
+});
+
+document.getElementById("searchBtn").addEventListener("click", () => {
+  const type = document.getElementById("cottage-type-label").value;
+  const capacity = document.getElementById("person-capacity-label").value;
+
+  // redirect to cottagepage.html with the selected filters
+  const query = new URLSearchParams({ type, capacity }).toString();
+  alert(query);
+  window.location.href = `cottagepage.html?${query}`;
+});
+
 // Employee Modal
 const modal = document.getElementById("employeeModal");
   const openBtn = document.getElementById("openPartners");
@@ -197,6 +253,17 @@ const closeContactModal = document.getElementById("closeContactModal");
 if (closeContactModal) {
   closeContactModal.addEventListener("click", () => {
     contactModal.style.display = "none";
+
+    //Removing active color
+    const navLinks = document.querySelectorAll(".nav-links a");
+    if (navLinks[2]) {
+      navLinks[2].classList.remove("active");
+    }
+
+    if(navLinks[0]){
+      navLinks[0].classList.add("active");
+    }
+
   });
 }
 
@@ -247,7 +314,7 @@ document.querySelector(".contact-form").addEventListener("submit", async (e) => 
       document.querySelector(".contact-form").reset();
       document.getElementById("contactModal").style.display = "none";
     } else {
-      showToast(data.error || "Failed to send message", true);
+      showToast(data.error || "❌ Failed to send message", true);
     }
   } catch (err) {
     showLoading(false);

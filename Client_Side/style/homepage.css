@@ -168,6 +168,11 @@ html,body {
 .navbar ul li a:hover {
   color: #5FADE5;
 }
+
+.nav-links a.active {
+  color: #CFDA77; 
+}
+
 .navbar ul li .highlight {
   font-size: 1rem;
   color: #CFDA77; 

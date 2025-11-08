@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/Admin_Side/admin_style/admin_users.css" />
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>S<span class="highlight">R</span></h2>
+      <p>Shun <span class="highlight">Resort</span></p>
+    </div>
+    <ul class="menu">
+      <li><a href="/Admin_Side/admin_html/admin_dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="#"><i class="fa-solid fa-campground"></i> Cottages</a></li>
+      <li><a href="#" class="active"><i class="fa-solid fa-user"></i> Users</a></li>
+      <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+      <li><a href="#"><i class="fa-solid fa-money-bill-wave"></i> Payments</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+    </ul>
+    <footer>
+      <p>&copy; 2025 Shun Resort. All rights reserved.</p>
+    </footer>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+   <main class="main-content">
+    <header class="topbar">
+      <h1>Users</h1>
+      <p>Manage your resort system efficiently</p>
+    </header>
+    <section class="user-section">
+        <a href="#" style="text-decoration: none; color: inherit;">
+          <div class="user-info">
+            <div class="left-info">
+              <p class="sender">
+                <i class="fa-solid fa-user"></i> Jayson Mancol / mancoljayson@gmail.com
+              </p>
+              <p class="time">01/01/0001</p>
+            </div>
+            <button class="delete-btn">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </a>
+    </section>
+  </main>
+
+    <!-- ===== User Profile Modal ===== -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+
+      <div class="profile-content">
+        <h2 class="profile-pic"><i class="fa-solid fa-user"></i></h2>
+        <h2 id="profileName"></h2>
+        <p id="profileEmail"></p>
+        <small id="profileDate"></small>
+      </div>
+    </div>
+  </div>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+  <script src="/Admin_Side/admin_script/admin_user.js"></script>
+</body>
+</html>
