@@ -398,6 +398,7 @@ app.get("/cottages-page", (req, res) => {
     res.json(results);
   });
 });
+
 //Cottage Like
 app.post("/cottage-like/:id", async (req, res) => {
   const cottageId = req.params.id;
@@ -461,6 +462,7 @@ app.get("/cottages-search", async (req, res) => {
     sql += " AND type = ?";
     params.push(type);
   }
+
   if (capacity) {
     sql += " AND capacity = ?";
     params.push(capacity);

@@ -209,9 +209,8 @@ document.getElementById("searchBtn").addEventListener("click", () => {
   const capacity = document.getElementById("person-capacity-label").value;
 
   // redirect to cottagepage.html with the selected filters
-  const query = new URLSearchParams({ type, capacity }).toString();
-  alert(query);
-  window.location.href = `cottagepage.html?${query}`;
+ const url = `cottagepage.html?type=${encodeURIComponent(type)}&capacity=${encodeURIComponent(capacity)}`;
+  window.location.href = url;
 });
 
 // Employee Modal

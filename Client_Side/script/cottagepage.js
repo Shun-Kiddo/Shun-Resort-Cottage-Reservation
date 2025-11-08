@@ -132,75 +132,111 @@ window.addEventListener('scroll', () => {
 document.addEventListener("DOMContentLoaded", async () => {
   const cottageTypeSelect = document.getElementById("cottage-type-label");
   const capacitySelect = document.getElementById("person-capacity-label");
+  const params = new URLSearchParams(window.location.search);
+  const typeParam = params.get("type");
+  const capacityParam = params.get("capacity");
 
-  // Fetch cottage types
+  // === Fetch cottage types ===
   try {
     const res = await fetch("http://localhost:5000/cottage-types");
     const types = await res.json();
 
-    cottageTypeSelect.innerHTML = `<option value="" disabled selected hidden>Cottage Type</option>`;
+    cottageTypeSelect.innerHTML = `<option value="" disabled selected hidden>${typeParam || "Cottage Type"}</option>`;
     types.forEach(row => {
       cottageTypeSelect.innerHTML += `<option value="${row.type}">${row.type}</option>`;
     });
+
+    // Auto-select if typeParam exists
+    if (typeParam) {
+      cottageTypeSelect.value = typeParam;
+    }
   } catch (error) {
     console.error("Error loading cottage types:", error);
   }
 
-  // Fetch person capacities
+  // === Fetch person capacities ===
   try {
     const res = await fetch("http://localhost:5000/person-capacity");
     const capacities = await res.json();
 
-    capacitySelect.innerHTML = `<option value="" disabled selected hidden>Person Capacity</option>`;
+    // If capacityParam exists, show it as "X Person"
+    capacitySelect.innerHTML = `<option value="" disabled selected hidden>${capacityParam ? capacityParam + " Person" : "Person Capacity"}</option>`;
     capacities.forEach(row => {
       capacitySelect.innerHTML += `<option value="${row.capacity}">${row.capacity} Person</option>`;
     });
+
+    // Auto-select if capacityParam exists
+    if (capacityParam) {
+      capacitySelect.value = capacityParam;
+    }
+
   } catch (error) {
     console.error("Error loading capacities:", error);
   }
+
+  // === Auto-trigger search when both params exist ===
+  if (typeParam || capacityParam) {
+    setTimeout(() => {
+      const searchBtn = document.querySelector(".search-button");
+      if (searchBtn) searchBtn.click();
+    }, 500); // Wait a bit for dropdowns to populate
+  }
 });
 
+
 //Search cottage
+// === Search cottage ===
 document.addEventListener("DOMContentLoaded", async () => {
   const typeSelect = document.getElementById("cottage-type-label");
   const capacitySelect = document.getElementById("person-capacity-label");
   const searchBtn = document.querySelector(".search-button");
   const cottageGrid = document.getElementById("cottageGrid");
 
-  // === Get search parameters from URL ===
+  // Get search parameters from URL
   const params = new URLSearchParams(window.location.search);
   const typeParam = params.get("type");
   const capacityParam = params.get("capacity");
 
-  console.log(typeParam+" "+capacityParam);
+  console.log("Type:", typeParam, "Capacity:", capacityParam);  
 
-  // === If coming from home with search filters ===
+  // Wait for dropdowns to load before searching
+  await new Promise(resolve => setTimeout(resolve, 400));
+
+  // Auto-search if parameters exist
   if (typeParam || capacityParam) {
+    if (typeParam) typeSelect.value = typeParam;
+    if (capacityParam) capacitySelect.value = capacityParam;
     await searchCottages(typeParam, capacityParam);
   } else {
-    // Only show all cottages if there’s NO search
     await loadAllCottages();
   }
 
-  // === Manual Search (within cottage page) ===
+  // Manual search button
   searchBtn.addEventListener("click", async () => {
     const selectedType = typeSelect.value;
     const selectedCapacity = capacitySelect.value;
+
+    if (!selectedType || !selectedCapacity) {
+      cottageGrid.innerHTML = "<p>No cottages found for your search.</p>";
+      setTimeout(() => window.location.reload(), 3000);
+      return;
+    }
+
     await searchCottages(selectedType, selectedCapacity);
   });
 
-  // === Function to load all cottages ===
+  // === Fetch all cottages ===
   async function loadAllCottages() {
     try {
       const res = await fetch("http://localhost:5000/cottages-search");
       const cottages = await res.json();
       displayCottages(cottages);
     } catch (error) {
-      console.error("Error fetching all cottages:", error);
+      console.error("Error fetching cottages:", error);
     }
   }
 
-  // === Function to fetch cottages based on filters ===
+  // === Search filtered cottages ===
   async function searchCottages(type, capacity) {
     try {
       const url = new URL("http://localhost:5000/cottages-search");
@@ -215,10 +251,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // === Display cottages dynamically ===
+  // === Display results ===
   function displayCottages(cottages) {
     cottageGrid.innerHTML = "";
-
     if (!cottages || cottages.length === 0) {
       cottageGrid.innerHTML = "<p>No cottages found for your search.</p>";
       return;
@@ -227,7 +262,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     cottages.forEach(cottage => {
       const card = document.createElement("div");
       card.classList.add("cottage-card");
-
       card.innerHTML = `
         <img src="${cottage.image}" alt="${cottage.name}">
         <div class="cottage-info">
@@ -245,6 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
+
 
 
 
