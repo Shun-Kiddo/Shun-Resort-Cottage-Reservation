@@ -7,6 +7,8 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 const path = require("path");
+const multer = require("multer");
+
 // Secret key (use env variable in real projects!)
 const JWT_SECRET = process.env.JWT_SECRET || "shun_secret_key";
 
@@ -18,6 +20,19 @@ app.use(cors({
   origin: 'http://127.0.0.1:5500', 
   credentials: true
 }));
+
+// === Multer setup ===
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "../image/cottages")); // adjust folder path
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({ storage });
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -372,6 +387,330 @@ app.post("/contact-landing-page", (req, res) => {
   });
 });
 
+//Cottages page
+app.get("/cottages-page", (req, res) => {
+  const sql = "SELECT * FROM cottages WHERE availability = 'Available'";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching cottages:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json(results);
+  });
+});
+//Cottage Like
+app.post("/cottage-like/:id", async (req, res) => {
+  const cottageId = req.params.id;
+  const costumerId = req.body.customer_id; // Pass logged-in user's ID from frontend
+
+  try {
+    // 1️⃣ Check if the user already liked this cottage
+    const [liked] = await db
+      .promise()
+      .query("SELECT * FROM cottage_likes WHERE customer_id = ? AND cottage_id = ?", [costumerId, cottageId]);
+
+    if (liked.length > 0) {
+      // 2️⃣ Already liked → unlike it
+      await db.promise().query("DELETE FROM cottage_likes WHERE customer_id = ? AND cottage_id = ?", [costumerId, cottageId]);
+      await db.promise().query("UPDATE cottages SET likes = likes - 1 WHERE id = ?", [cottageId]);
+
+      const [updated] = await db.promise().query("SELECT likes FROM cottages WHERE id = ?", [cottageId]);
+      return res.json({ success: true, liked: false, likes: updated[0].likes });
+    } else {
+      // 3️⃣ Not liked yet → like it
+      await db.promise().query("INSERT INTO cottage_likes (customer_id, cottage_id) VALUES (?, ?)", [costumerId, cottageId]);
+      await db.promise().query("UPDATE cottages SET likes = likes + 1 WHERE id = ?", [cottageId]);
+
+      const [updated] = await db.promise().query("SELECT likes FROM cottages WHERE id = ?", [cottageId]);
+      return res.json({ success: true, liked: true, likes: updated[0].likes });
+    }
+  } catch (error) {
+    console.error("Error updating like:", error);
+    res.status(500).json({ success: false, message: "Database error" });
+  }
+});
+
+// Search Cottage
+app.get("/cottage-types", async (req, res) => {
+  try {
+    
+    const [rows] = await db.promise().query("SELECT DISTINCT type FROM cottages");
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching cottage types" });
+  }
+});
+
+app.get("/person-capacity", async (req, res) => {
+  try {
+    const [rows] = await db.promise().query("SELECT DISTINCT capacity FROM cottages");
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching person capacities" });
+  }
+});
+
+app.get("/cottages-search", async (req, res) => {
+  const { type, capacity } = req.query;
+  let sql = "SELECT * FROM cottages WHERE 1=1";
+  const params = [];
+
+  if (type) {
+    sql += " AND type = ?";
+    params.push(type);
+  }
+  if (capacity) {
+    sql += " AND capacity = ?";
+    params.push(capacity);
+  }
+
+  try {
+    const [rows] = await db.promise().query(sql, params);
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching cottages:", err);
+    res.status(500).json({ error: "Failed to fetch cottages" });
+  }
+});
+
+
+
+/*===============ADMIN BACKEND=================== */
+
+/* ==================== ADMIN - USER MANAGEMENT ==================== */
+/* User List Count */
+app.get('/admin-total-users',(req,res) => {
+    const sql = "SELECT COUNT(*) AS total FROM customer";
+    db.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ total: result[0].total });
+  });
+});
+
+/* User List Display */
+app.get('/admin-user-list', (req,res) => {
+    const sql = `SELECT c_id,c_full_name,c_gmail,DATE_FORMAT(created_timestamp, '%m/%d/%Y %h:%i %p') AS formatted_date
+    FROM customer
+    ORDER BY created_timestamp DESC
+  `;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching user:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+/* User List Delete */
+app.delete("/admin-user-list/:id", (req, res) => {
+  const userId = req.params.id;
+  const sql = "DELETE FROM customer WHERE c_id = ?";
+
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error("Error deleting user:", err);
+      return res.status(500).json({ success: false, error: "Server error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, message: "User deleted successfully" });
+  });
+});
+
+
+app.get('/admin-messages', (req,res) => {
+    const sql = `SELECT msg_id,full_name,email,message,source_page,DATE_FORMAT(created_at, '%m/%d/%Y %h:%i %p') AS formatted_date
+    FROM customer_message
+    ORDER BY created_at DESC
+  `;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching messages:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+app.delete("/admin-messages/:id", (req, res) => {
+  const messageId = req.params.id;
+  const sql = "DELETE FROM customer_message WHERE msg_id = ?";
+
+  db.query(sql, [messageId], (err, result) => {
+    if (err) {
+      console.error("Error deleting message:", err);
+      return res.status(500).json({ success: false, error: "Server error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Message not found" });
+    }
+
+    res.json({ success: true, message: "Message deleted successfully" });
+  });
+});
+
+
+
+/* ==================== ADMIN - COTTAGE MANAGEMENT ==================== */
+/* Cottage Available Count */
+app.get('/admin-cottages-available',(req,res) => {
+    const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";
+    db.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ total: result[0].total });
+  });
+});
+
+app.get('/admin-cottages-available',(req,res) => {
+    const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";
+    db.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ total: result[0].total });
+  });
+});
+
+// === Get all cottages ===
+app.get("/admin-cottages", (req, res) => {
+  const sql = "SELECT * FROM cottages ORDER BY created_at DESC";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching cottages:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+// === Create new cottage ===
+app.post("/admin-cottages/create", upload.single("image"), (req, res) => {
+  const { name, type, capacity, price, availability } = req.body;
+  const image = req.file ? `/image/cottages/${req.file.filename}` : null;
+
+  if (!name || !type || !capacity || !price ||!image|| !availability)
+    return res.status(400).json({ error: "All fields are required" });
+
+  const sql = `
+    INSERT INTO cottages (name, type, capacity, price, image, availability)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+  db.query(sql, [name, type, capacity, price, image, availability], (err) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+    res.json({ success: true, message: "Cottage created successfully!" });
+  });
+});
+
+app.use("/image/cottages", express.static(path.join(__dirname, "../image/cottages")));
+
+
+// === UPDATE cottage (with optional image + availability) ===
+app.put("/admin-cottages/:id", upload.single("image"), (req, res) => {
+  const { id } = req.params;
+  const { name, type, capacity, price, availability } = req.body;
+
+  if (!name || !type || !capacity || !price || !availability) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+ const image = req.file ? `/image/cottages/${req.file.filename}` : null;
+
+
+  let sql, values;
+
+  if (image) {
+    sql = `
+      UPDATE cottages
+      SET name = ?, type = ?, capacity = ?, price = ?, availability = ?, image = ?
+      WHERE id = ?
+    `;
+    values = [name, type, capacity, price, availability, image, id];
+  } else {
+    sql = `
+      UPDATE cottages
+      SET name = ?, type = ?, capacity = ?, price = ?, availability = ?
+      WHERE id = ?
+    `;
+    values = [name, type, capacity, price, availability, id];
+  }
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Error updating cottage:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json({ success: true, message: "Cottage updated successfully!" });
+  });
+});
+
+// === Delete cottage ===
+app.delete("/admin-cottages/:id", (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM cottages WHERE id = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error("Error deleting cottage:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Cottage not found" });
+    }
+    res.json({ success: true, message: "Cottage deleted successfully!" });
+  });
+});
+
+// === Get single cottage (for update modal) ===
+app.get("/admin-cottages/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "SELECT * FROM cottages WHERE id = ?";
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error("Error fetching cottage:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Cottage not found" });
+    }
+    res.json(results[0]);
+  });
+});
+
+// Like cottage
+app.post("/admin-cottages/like/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = `
+    UPDATE cottages 
+    SET likes = COALESCE(likes, 0) + 1
+    WHERE id = ?
+  `;
+  db.query(sql, [id], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    db.query("SELECT likes FROM cottages WHERE id = ?", [id], (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true, likes: result[0].likes });
+    });
+  });
+});
+
+/*===============Total Revenue=============== */
+//
+app.get('/admin-total-revenue',(req,res) => {
+    const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";
+    db.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ total: result[0].total });
+  });
+});
+
+
+
 
 // Start server
 app.listen(PORT, () => {
@@ -379,27 +718,4 @@ app.listen(PORT, () => {
 });
 
 
-
-// Update user
-/*
-app.put('/api/customer/:id', (req, res) => {
-  const { id } = req.params;
-  const { name, email } = req.body;
-  db.query('UPDATE customer SET name = ?, email = ? WHERE id = ?', [name, email, id], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'User updated successfully' });
-  });
-});
-*/
-
-// Delete user
-/*
-app.delete('/api/customer/:id', (req, res) => {
-  const { id } = req.params;
-  db.query('DELETE FROM customer WHERE id = ?', [id], (err) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'User deleted successfully' });
-  });
-});
-*/
 
