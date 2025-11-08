@@ -389,7 +389,7 @@ app.post("/contact-landing-page", (req, res) => {
 
 //Cottages page
 app.get("/cottages-page", (req, res) => {
-  const sql = "SELECT * FROM cottages WHERE availability = 'Available'";
+  const sql = "SELECT * FROM cottages";
   db.query(sql, (err, results) => {
     if (err) {
       console.error("Error fetching cottages:", err);

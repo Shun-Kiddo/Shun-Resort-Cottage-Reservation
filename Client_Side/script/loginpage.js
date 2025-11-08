@@ -55,8 +55,8 @@ document.querySelector("form").addEventListener("submit", async (e) => {
       localStorage.setItem("userEmail", result.user.email);
       localStorage.setItem("userId", result.user.id);
       document.querySelector("form").reset();
-      showToast("✅ Login successful! Redirecting...");
-      setTimeout(() => window.location.replace("/Client_Side/html/homepage.html"), 1000);
+      showToast("Login successful! Redirecting...");
+      setTimeout(() => window.location.replace("/Client_Side/html/homepage.html",3000));
     } else {
       showToast(result.message || "Invalid email or password", true);
     }

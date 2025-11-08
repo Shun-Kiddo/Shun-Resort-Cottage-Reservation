@@ -159,13 +159,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const res = await fetch("http://localhost:5000/person-capacity");
     const capacities = await res.json();
 
-    // If capacityParam exists, show it as "X Person"
     capacitySelect.innerHTML = `<option value="" disabled selected hidden>${capacityParam ? capacityParam + " Person" : "Person Capacity"}</option>`;
     capacities.forEach(row => {
       capacitySelect.innerHTML += `<option value="${row.capacity}">${row.capacity} Person</option>`;
     });
-
-    // Auto-select if capacityParam exists
     if (capacityParam) {
       capacitySelect.value = capacityParam;
     }
@@ -173,33 +170,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("Error loading capacities:", error);
   }
-
-  // === Auto-trigger search when both params exist ===
   if (typeParam || capacityParam) {
     setTimeout(() => {
       const searchBtn = document.querySelector(".search-button");
       if (searchBtn) searchBtn.click();
-    }, 500); // Wait a bit for dropdowns to populate
+    }, 500); 
   }
 });
 
-
-//Search cottage
 // === Search cottage ===
 document.addEventListener("DOMContentLoaded", async () => {
   const typeSelect = document.getElementById("cottage-type-label");
   const capacitySelect = document.getElementById("person-capacity-label");
   const searchBtn = document.querySelector(".search-button");
   const cottageGrid = document.getElementById("cottageGrid");
-
-  // Get search parameters from URL
   const params = new URLSearchParams(window.location.search);
   const typeParam = params.get("type");
   const capacityParam = params.get("capacity");
 
   console.log("Type:", typeParam, "Capacity:", capacityParam);  
-
-  // Wait for dropdowns to load before searching
   await new Promise(resolve => setTimeout(resolve, 400));
 
   // Auto-search if parameters exist
