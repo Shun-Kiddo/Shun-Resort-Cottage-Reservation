@@ -50,14 +50,19 @@ document.querySelector("form").addEventListener("submit", async (e) => {
     const result = await response.json();
     showLoading(false);
 
-    if (response.ok) {
-      localStorage.setItem("authToken", result.token);
-      localStorage.setItem("userEmail", result.user.email);
-      localStorage.setItem("userId", result.user.id);
-      document.querySelector("form").reset();
-      showToast("Login successful! Redirecting...");
-      setTimeout(() => window.location.replace("/Client_Side/html/homepage.html",3000));
-    } else {
+  if (response.ok) {
+    localStorage.setItem("authToken", result.token);
+    localStorage.setItem("userEmail", result.user.email);
+    localStorage.setItem("userId", result.user.id);
+    document.querySelector("form").reset();
+    showToast("Login successful! Redirecting...");
+    showLoading(true);
+
+    setTimeout(() => {
+      showLoading(false);
+      window.location.replace("/Client_Side/html/homepage.html");
+    }, 2000);
+  }else {
       showToast(result.message || "Invalid email or password", true);
     }
 

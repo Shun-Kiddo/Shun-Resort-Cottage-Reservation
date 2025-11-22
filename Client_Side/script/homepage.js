@@ -49,11 +49,35 @@ if (!token) {
   });
 }
 
-// Logout button
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("authToken");
-  window.location.replace("/Client_Side/auth/loginpage.html");
+document.addEventListener("DOMContentLoaded", async () => {
+  const usernameSpan = document.getElementById("usernameDisplay");
+ const userEmail = localStorage.getItem("userEmail");
+
+  if (!userEmail) {
+    usernameSpan.textContent = "Guest";
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:5000/get-user-name?email=${encodeURIComponent(userEmail)}`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+    const data = await res.json();
+    usernameSpan.textContent = data.name || "Guest";
+  } catch (err) {
+    console.error(err);
+    usernameSpan.textContent = "Guest";
+  }
 });
+
+
+
+
 // Prevent back navigation to login page
 window.history.pushState(null, null, window.location.href);
 window.onpopstate = () => window.history.go(1);

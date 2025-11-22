@@ -1,0 +1,13 @@
+const params = new URLSearchParams(window.location.search);
+const bookingId = params.get('bookingId');
+
+if (bookingId) {
+  fetch('http://localhost:5000/booking-success', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookingId })
+  })
+  .then(res => res.json())
+  .then(data => console.log(data.message))
+  .catch(err => console.error(err));
+}

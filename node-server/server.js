@@ -8,12 +8,23 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require("nodemailer");
 const path = require("path");
 const multer = require("multer");
+const stripe = require("stripe")("sk_test_51SVwUjKlyPugFBoG036IO0dtuDNAwyoR1oAAm1uWJu8mCljbSRvHywI5BiYrj7mkyTULjdN7TkFOqgiNRGAOXFb800ic1VmNHy");
 
 // Secret key (use env variable in real projects!)
 const JWT_SECRET = process.env.JWT_SECRET || "shun_secret_key";
 
 // Middleware
 app.use(express.json());
+
+// Serve static files for frontend
+app.use("/Client_Side", express.static(path.join(__dirname, "../Client_Side")));
+
+// Serve uploaded cottage images
+app.use("/image/cottages", express.static(path.join(__dirname, "../image/cottages")));
+
+// Serve single images you reference directly (like cottage_logo.png)
+app.use("/image", express.static(path.join(__dirname, "../image")));
+
 
 //Enable CORS for your frontend
 app.use(cors({
@@ -24,7 +35,7 @@ app.use(cors({
 // === Multer setup ===
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../image/cottages")); // adjust folder path
+    cb(null, path.join(__dirname, "../image/cottages"));
   },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + file.originalname;
@@ -64,7 +75,7 @@ db.connect(err => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.send('MySQL + Node.js server running!');
+  res.sendFile(path.join(__dirname, "../Client_Side/html/landingpage.html"));
 });
 
 // Signup route (optional)
@@ -238,6 +249,234 @@ app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, "../Client_Side/html/homepage.html"));
 });
 
+// Get User Name
+app.get('/get-user-name', async (req, res) => {
+  try {
+    const email = req.query.email;
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    const [rows] = await db.promise().query(
+      "SELECT c_full_name FROM customer WHERE c_gmail = ?",
+      [email]
+    );
+
+    if (rows.length > 0) {
+      res.json({ name: rows[0].c_full_name }); 
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+//Profile
+app.get("/user-bookings/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const [rows] = await db.promise().query(`
+      SELECT 
+        b.id AS booking_id,
+        c.name,
+        c.type,
+        c.capacity,
+        b.status,
+        b.payment_method,
+        b.created_at AS booking_date
+      FROM bookings b
+      JOIN cottages c ON b.cottage_id = c.id
+      WHERE b.user_id = ?
+      AND b.status IN ('paid', 'cancelled', 'confirmed')
+      ORDER BY b.created_at DESC
+    `, [userId]);
+
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.post("/booking-cancel", async (req, res) => {
+  const { bookingId } = req.body;
+
+  if (!bookingId) {
+    return res.status(400).json({ error: "bookingId is required" });
+  }
+
+  try {
+    // 1️⃣ Get the cottage_id for this booking
+    const [rows] = await db.promise().query(
+      "SELECT cottage_id FROM bookings WHERE id = ?",
+      [bookingId]
+    );
+
+    if (!rows[0]) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    const cottageId = rows[0].cottage_id;
+    await db.promise().query(
+      "UPDATE bookings SET status = 'cancelled' WHERE id = ?",
+      [bookingId]
+    );
+
+    await db.promise().query(
+      "UPDATE cottages SET availability = 'Available' WHERE id = ?",
+      [cottageId]
+    );
+
+    res.json({ success: true, message: "Booking cancelled and cottage is now available" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+//Change Password
+app.post("/change-password", async (req, res) => {
+  const { email, currentPassword, newPassword } = req.body;
+
+  if (!email || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: "Missing required fields.", email,currentPassword,newPassword });
+  }
+
+  db.query(
+    `SELECT c_password FROM customer WHERE c_gmail = ?`,
+    [email],
+    async (err, results) => {
+      if (err) return res.status(500).json({ message: "Database error." });
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: "User not found." });
+      }
+
+      const hashedPassword = results[0].c_password;
+      const match = await bcrypt.compare(currentPassword, hashedPassword);
+      if (!match) {
+        return res.status(401).json({ message: "Current password is incorrect." });
+      }
+      const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+      db.query(
+        `UPDATE customer SET c_password = ? WHERE c_gmail = ?`,
+        [newHashedPassword, email],
+        (updateErr) => {
+          if (updateErr) {
+            return res.status(500).json({ message: "Error updating password." });
+          }
+          res.json({ message: "Password updated successfully." });
+        }
+      );
+    }
+  );
+});
+
+
+//Cottage
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const { userId, cottageId, name, price } = req.body;
+    const amount = Math.round(Number(price) * 100);
+
+    // Create booking first with ONLINE payment method
+    const [result] = await db.promise().query(
+      "INSERT INTO bookings (user_id, cottage_id, status, payment_method) VALUES (?, ?, ?, ?)",
+      [userId, cottageId, 'pending', 'online']
+    );
+
+    const bookingId = result.insertId;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "php",
+            product_data: { name },
+            unit_amount: amount,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `http://127.0.0.1:5500/Client_Side/paymentStatus/success.html?bookingId=${bookingId}`,
+      cancel_url: `http://127.0.0.1:5500/Client_Side/paymentStatus/cancel.html?bookingId=${bookingId}`,
+    });
+
+    // Store session ID
+    await db.promise().query(
+      "UPDATE bookings SET stripe_session_id = ? WHERE id = ?",
+      [session.id, bookingId]
+    );
+
+    res.json({ id: session.id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+
+// For cash bookings
+// Cash bookings
+app.post("/create-cash-booking", async (req, res) => {
+  try {
+    const { userId, cottageId } = req.body;
+
+    const [result] = await db.promise().query(
+      "INSERT INTO bookings (user_id, cottage_id, status, payment_method) VALUES (?, ?, ?, ?)",
+      [userId, cottageId, 'confirmed', 'cash']
+    );
+
+    // Mark cottage as occupied
+    await db.promise().query(
+      "UPDATE cottages SET availability = 'Occupied' WHERE id = ?",
+      [cottageId]
+    );
+
+    res.json({ success: true, message: "Cash booking confirmed!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Error creating cash booking" });
+  }
+});
+
+app.post('/booking-success', async (req, res) => {
+  const { bookingId } = req.body;
+
+  try {
+    await db.promise().query(
+      "UPDATE bookings SET status = 'paid' WHERE id = ?",
+      [bookingId]
+    );
+
+    const [rows] = await db.promise().query(
+      "SELECT cottage_id FROM bookings WHERE id = ?",
+      [bookingId]
+    );
+
+    const cottageId = rows[0].cottage_id;
+    await db.promise().query(
+      "UPDATE cottages SET availability = 'Occupied' WHERE id = ?",
+      [cottageId]
+    );
+
+    res.json({ message: 'Booking paid and cottage marked as occupied' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update booking/cottage' });
+  }
+});
+
+
+
+
 
 // Contact route for Home Page
 app.post("/contact-home", (req, res) => {
@@ -402,23 +641,23 @@ app.get("/cottages-page", (req, res) => {
 //Cottage Like
 app.post("/cottage-like/:id", async (req, res) => {
   const cottageId = req.params.id;
-  const costumerId = req.body.customer_id; // Pass logged-in user's ID from frontend
+  const costumerId = req.body.customer_id; 
 
   try {
-    // 1️⃣ Check if the user already liked this cottage
+   
     const [liked] = await db
       .promise()
       .query("SELECT * FROM cottage_likes WHERE customer_id = ? AND cottage_id = ?", [costumerId, cottageId]);
 
     if (liked.length > 0) {
-      // 2️⃣ Already liked → unlike it
+  
       await db.promise().query("DELETE FROM cottage_likes WHERE customer_id = ? AND cottage_id = ?", [costumerId, cottageId]);
       await db.promise().query("UPDATE cottages SET likes = likes - 1 WHERE id = ?", [cottageId]);
 
       const [updated] = await db.promise().query("SELECT likes FROM cottages WHERE id = ?", [cottageId]);
       return res.json({ success: true, liked: false, likes: updated[0].likes });
     } else {
-      // 3️⃣ Not liked yet → like it
+    
       await db.promise().query("INSERT INTO cottage_likes (customer_id, cottage_id) VALUES (?, ?)", [costumerId, cottageId]);
       await db.promise().query("UPDATE cottages SET likes = likes + 1 WHERE id = ?", [cottageId]);
 
@@ -570,14 +809,6 @@ app.get('/admin-cottages-available',(req,res) => {
   });
 });
 
-app.get('/admin-cottages-available',(req,res) => {
-    const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";
-    db.query(sql, (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ total: result[0].total });
-  });
-});
-
 // === Get all cottages ===
 app.get("/admin-cottages", (req, res) => {
   const sql = "SELECT * FROM cottages ORDER BY created_at DESC";
@@ -701,17 +932,156 @@ app.post("/admin-cottages/like/:id", (req, res) => {
   });
 });
 
-/*===============Total Revenue=============== */
-//
-app.get('/admin-total-revenue',(req,res) => {
-    const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";
-    db.query(sql, (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ total: result[0].total });
+app.get("/admin-total-booked-today", async (req, res) => {
+  try {
+    const [rows] = await db.promise().query(`
+      SELECT COUNT(*) AS total
+      FROM bookings
+      WHERE DATE(created_at) = CURDATE()
+    `);
+    res.json({ total: rows[0].total });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+app.get("/admin-booked-users", async (req, res) => {
+  try {
+    const [rows] = await db.promise().query(`
+      SELECT 
+        u.c_id, 
+        u.c_full_name, 
+        u.c_gmail, 
+        b.id AS booking_id,
+        b.status AS booking_status,
+        b.payment_method,
+        b.created_at AS booking_date,
+        c.name AS cottage_name,
+        c.type AS cottage_type,
+        c.capacity AS cottage_capacity,
+        c.price AS cottage_price
+      FROM bookings b
+      JOIN customer u ON b.user_id = u.c_id
+      JOIN cottages c ON b.cottage_id = c.id
+      WHERE b.status IN ('paid','cancelled','confirmed')
+      ORDER BY b.created_at DESC
+    `);
+
+    const formatted = rows.map(row => ({
+      ...row,
+      formatted_date: new Date(row.booking_date).toLocaleString()
+    }));
+
+    res.json(formatted);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// === Delete booking ===
+app.delete("/admin-bookings/:id", (req, res) => {
+  const { id } = req.params;
+
+  const sql = "DELETE FROM bookings WHERE id = ?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error("Error deleting cottage:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Cottage not found" });
+    }
+    res.json({ success: true, message: "Booked deleted successfully!" });
   });
 });
 
+// For Cash Payment
+app.patch("/admin-bookings/confirm-payment/:id", async (req, res) => {
+  const bookingId = req.params.id;
+  try {
+    const [result] = await db.promise().query(
+      "UPDATE bookings SET status = 'paid' WHERE id = ? AND payment_method = 'cash'",
+      [bookingId]
+    );
 
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Booking not found or not a cash payment" });
+    }
+
+    res.json({ success: true, message: "Payment confirmed" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+/*===============Total Revenue=============== */
+
+// === Total Revenue===
+app.get("/admin-total-revenue", async (req, res) => {
+  try {
+    const [rows] = await db.promise().query(`
+      SELECT SUM(c.price) AS totalRevenue
+      FROM bookings b
+      JOIN cottages c ON b.cottage_id = c.id
+      WHERE b.status = 'paid'
+    `);
+    res.json({ totalRevenue: rows[0].totalRevenue || 0 });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+
+// Admin Revenue Endpoint
+app.get("/admin-revenue", async (req, res) => {
+  try {
+    // Get total revenue
+    const [totalRows] = await db.promise().query(`
+      SELECT SUM(c.price) AS totalRevenue
+      FROM bookings b
+      JOIN cottages c ON b.cottage_id = c.id
+      WHERE b.status = 'paid'
+    `);
+    const totalRevenue = totalRows[0].totalRevenue || 0;
+
+    // Get monthly revenue
+    const [monthlyRows] = await db.promise().query(`
+      SELECT MONTH(b.created_at) AS monthNum, SUM(c.price) AS revenue
+      FROM bookings b
+      JOIN cottages c ON b.cottage_id = c.id
+      WHERE b.status = 'paid'
+      GROUP BY MONTH(b.created_at)
+      ORDER BY monthNum ASC
+    `);
+
+    // Map month numbers to names
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // Fill all 12 months, set revenue to 0 if no data
+    const monthly = monthNames.map((name, index) => {
+      const row = monthlyRows.find(r => r.monthNum === index + 1);
+      return {
+        month: name,
+        revenue: row ? row.revenue : 0
+      };
+    });
+
+    res.json({
+      totalRevenue,
+      monthly
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
 
 
 // Start server

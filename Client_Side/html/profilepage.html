@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/Client_Side/style/profilepage.css">
+</head>
+<body>
+
+<nav class="profile-navbar">
+  <div class="logo">S<span class="highlight">R</span></div>
+
+  <div class="nav-buttons">
+    <button id="backHomeBtn" class="btn back">Back to Home</button>
+    <button id="logoutBtn" class="btn red">Logout Account</button>
+  </div>
+</nav>
+
+
+<div class="profile-container">
+  <!-- User Card -->
+  <div class="profile-card">
+    <h3>Profile Information</h3>
+    <a class="user"><i class="fa-solid fa-user"></i></a>
+    <h2 id="usernameDisplay">Shun Kiddo</h2>
+    <p  id="useremailDisplay">kiddo@example.com</p>
+    
+    <div class="profile-buttons">
+      <button id="changePasswordBtn" class="btn dark">Change Password</button>
+    </div>
+  </div>
+
+
+  <!-- Cottage Bookings -->
+  <div class="booking-section">
+    <h3>Your Booked Cottages</h3>
+
+    <table class="booking-table">
+      <thead>
+        <tr>
+          <th>Cottage Name</th>
+          <th>Type</th>
+          <th>Capacity</th>
+          <th>Check-in</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="bookingList">
+        <!-- Data Loaded from JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+    <!-- Change Password Modal -->
+    <div class="changePassword-modal" id="changePasswordModal">
+        <div class="changePassword-modal-content">
+          <span class="close-modal" id="closeModal">&times;</span>
+              <h2 class="changePassword-header">Change Password</h2>
+                <form class="changePassword-form">
+                  
+                  <label for="currentPassword">Current Password</label>
+                  <div class="password-container">
+                    <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                    <i class="fa-solid fa-eye" id="toggleCurrentPassword" style="cursor: pointer;"></i>
+                  </div>
+
+                  <label for="newPassword">New Password</label>
+                  <div class="password-container">
+                    <input type="password" id="newPassword" placeholder="Enter new password" required>
+                    <i class="fa-solid fa-eye" id="toggleNewPassword" style="cursor: pointer;"></i>
+                  </div>
+
+                  <label for="confirmPassword">Confirm Password</label>
+                  <div class="password-container">
+                    <input type="password" id="confirmPassword" placeholder="Enter confirm password" required>
+                    <i class="fa-solid fa-eye" id="toggleConfirmPassword" style="cursor: pointer;"></i>
+                  </div>
+
+                  <button type="submit">Change Password</button>
+                </form>
+          </div>
+      </div>
+
+ <!-- Generic Confirmation Modal -->
+<div id="confirmationModal" class="changePassword-modal">
+  <div class="changePassword-modal-content">
+    <h3 id="confirmationTitle" class="changePassword-header">Title</h3>
+    <p id="confirmationMessage">Message</p>
+    <div style="display:flex; justify-content:center; gap:1rem; margin-top:20px;">
+      <button id="confirmYesBtn" class="btn dark" style="background-color: red;">Yes</button>
+      <button id="confirmNoBtn" class="btn dark">No</button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+<script src="/Client_Side/script/profilepage.js"></script>
+</body>
+</html>

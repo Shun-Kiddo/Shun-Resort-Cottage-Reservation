@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Revenue - Shun Resort</title>
+  <link rel="icon" type="image/png" href="/image/cottage_logo.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/Admin_Side/admin_style/admin_revenuepage.css" /> <!-- reuse style -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>S<span class="highlight">R</span></h2>
+      <p>Shun <span class="highlight">Resort</span></p>
+    </div>
+    <ul class="menu">
+      <li><a href="/Admin_Side/admin_html/admin_dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_cottage.html"><i class="fa-solid fa-campground"></i> Cottages</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_user.html"><i class="fa-solid fa-user"></i> Users</a></li>
+       <li><a href="/Admin_Side/admin_html/admin_bookpage.html"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_revenue.html" class="active"><i class="fa-solid fa-money-bill-wave"></i> Revenue</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
+      <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+    </ul>
+    <footer>
+      <p>&copy; 2025 Shun Resort. All rights reserved.</p>
+    </footer>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="topbar">
+      <h1>Revenue Overview</h1>
+      <p>Total income from all paid cottages and monthly sales graph</p>
+    </header>
+
+    <!-- Revenue Summary -->
+    <section class="revenue-summary">
+      <h2>Total Revenue: ₱<span id="totalRevenue">0</span></h2>
+    </section>
+
+    <!-- Monthly Revenue Chart -->
+    <section class="revenue-chart">
+      <canvas id="monthlyChart" width="400" height="200"></canvas>
+    </section>
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="/Admin_Side/admin_script/admin_revenuepage.js"></script>
+</body>
+</html>

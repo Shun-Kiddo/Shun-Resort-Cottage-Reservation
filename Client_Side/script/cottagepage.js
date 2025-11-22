@@ -49,12 +49,6 @@ if (!token) {
   });
 }
 
-// Logout button
-document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("authToken");
-  window.location.replace("/Client_Side/auth/loginpage.html");
-});
-
 // Prevent back navigation to login page
 window.history.pushState(null, null, window.location.href);
 window.onpopstate = () => window.history.go(1);
@@ -241,73 +235,56 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // === Display results ===
-  function displayCottages(cottages) {
-    cottageGrid.innerHTML = "";
-    if (!cottages || cottages.length === 0) {
-      cottageGrid.innerHTML = "<p>No cottages found for your search.</p>";
-      return;
-    }
+function displayCottages(cottages) {
+  const cottageGrid = document.getElementById("cottageGrid");
+  cottageGrid.innerHTML = "";
 
-    cottages.forEach(cottage => {
-      const card = document.createElement("div");
-      card.classList.add("cottage-card");
-      card.innerHTML = `
-        <img src="${cottage.image}" alt="${cottage.name}">
-        <div class="cottage-info">
-          <h3>${cottage.name} / <span class="heart" data-id="${cottage.id}">❤ ${cottage.likes}</span></h3>
-          <p>Cottage Type: ${cottage.type}<br>
-             Person Capacity: ${cottage.capacity}<br>
-             Status: ${cottage.availability}</p>
-          <div class="cottage-footer">
-            <span class="price">₱${parseFloat(cottage.price).toLocaleString()}</span>
-            <button class="book-btn">Book</button>
-          </div>
-        </div>
-      `;
-      cottageGrid.appendChild(card);
-    });
+  if (!cottages || cottages.length === 0) {
+    cottageGrid.innerHTML = "<p>No cottages found for your search.</p>";
+    return;
   }
-});
 
+  cottages.forEach(cottage => {
+    const card = document.createElement("div");
+    card.classList.add("cottage-card");
 
+    // Only show book button if available
+    const bookButtonHTML = cottage.availability === "Available"
+      ? `<button class="book-btn">Book</button>`
+      : ''; // hide button if Occupied
 
+    card.innerHTML = `
+      <img src="${cottage.image}" alt="${cottage.name}">
+      <div class="cottage-info">
+        <h3>${cottage.name} / <span class="heart" data-id="${cottage.id}">❤ ${cottage.likes}</span></h3>
+        <p>Cottage Type: ${cottage.type}<br>
+           Person Capacity: ${cottage.capacity}<br>
+           Status: ${cottage.availability}</p>
+        <div class="cottage-footer">
+          <span class="price">₱${parseFloat(cottage.price).toLocaleString()}</span>
+          ${bookButtonHTML}
+        </div>
+      </div>
+    `;
+
+    cottageGrid.appendChild(card);
+  });
+}
 
 async function fetchCottages() {
-  try {
+ try {
     const response = await fetch("http://localhost:5000/cottages-page");
     const cottages = await response.json();
-
-    const grid = document.getElementById("cottageGrid");
-    grid.innerHTML = ""; // Clear previous contents
-
-    cottages.forEach(cottage => {
-      const card = document.createElement("div");
-      card.classList.add("cottage-card");
-
-      card.innerHTML = `
-        <img src="${cottage.image}" alt="${cottage.name}">
-        <div class="cottage-info">
-          <h3>${cottage.name} / <span class="heart" data-id="${cottage.id}">❤ ${cottage.likes}</span></h3>
-          <p>Cottage Type: ${cottage.type}<br>
-             Person Capacity: ${cottage.capacity}<br>
-             Status: ${cottage.availability}</p>
-          <div class="cottage-footer">
-            <span class="price">₱${parseFloat(cottage.price).toLocaleString()}</span>
-            <button class="book-btn">Book</button>
-          </div>
-        </div>
-        
-      `;
-
-      grid.appendChild(card);
-    });
+    displayCottages(cottages); 
   } catch (error) {
     console.error("Error fetching cottages:", error);
   }
 }
 
-// Fetch cottages when page loads
 window.addEventListener("DOMContentLoaded", fetchCottages);
+});
+
+
 
 // Handle heart button
 document.addEventListener("click", async function (e) {
@@ -422,3 +399,142 @@ document.querySelector(".contact-form").addEventListener("submit", async (e) => 
     showToast("🚫 Something went wrong. Try again later.", true);
   }
 });
+
+// ==== BOOKING MODAL JS ====
+document.addEventListener("DOMContentLoaded", () => {
+  // === Elements ===
+  const bookingModal = document.getElementById("bookingModal");
+  const closeBookingModal = document.getElementById("closeBookingModal");
+  const confirmBookingBtn = document.getElementById("confirmBooking");
+  const payNowBtn = document.getElementById("payNowBtn");
+  const paymentSelect = document.getElementById("paymentSelect"); // <select> for payment
+
+  let selectedCottage = null;
+
+  // === Book button click ===
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("book-btn")) {
+      const card = e.target.closest(".cottage-card");
+
+      selectedCottage = {
+        id: card.querySelector(".heart").dataset.id, 
+        name: card.querySelector("h3").innerText.split("/")[0].trim(),
+        details: card.querySelector("p").innerHTML,
+        price: card.querySelector(".price").innerText.replace("₱", "").replace(",", ""),
+        image: card.querySelector("img").src,
+        likes: card.querySelector(".heart").innerText.replace("❤ ", "")
+      };
+
+      const bookName = document.getElementById("bookName");
+      const bookDetails = document.getElementById("bookDetails");
+      const bookImage = document.getElementById("bookImage");
+      const heartCount = document.getElementById("heartCount");
+
+      if (bookName) bookName.innerText = selectedCottage.name;
+      if (bookDetails) bookDetails.innerHTML = selectedCottage.details;
+      if (bookImage) bookImage.src = selectedCottage.image;
+      if (heartCount) heartCount.innerText = selectedCottage.likes;
+
+      if (bookingModal) bookingModal.style.display = "flex";
+    }
+  });
+
+  // === Close modal ===
+  if (closeBookingModal) {
+    closeBookingModal.addEventListener("click", () => {
+      bookingModal.style.display = "none";
+    });
+  }
+
+  window.addEventListener("click", (event) => {
+    if (event.target === bookingModal) {
+      bookingModal.style.display = "none";
+    }
+  });
+
+  // === Confirm booking ===
+  if (confirmBookingBtn) {
+    confirmBookingBtn.addEventListener("click", () => {
+      if (!selectedCottage) return;
+      window.location.href = `/Client_Side/booking/bookingform.html?name=${encodeURIComponent(selectedCottage.name)}`;
+    });
+  }
+
+  // === Stripe Payment ===
+  const stripe = Stripe("pk_test_51SVwUjKlyPugFBoGmdQiEZIXRq8XpT2vM2DhpuaJKY2nc9AttQpJ7ubSXIAxR2Iv2Hp3KgaiFZA1kr6BuAm41O7200C1ob7BXC");
+  const currentUserId = localStorage.getItem("userId"); 
+  
+  if (payNowBtn) {
+    payNowBtn.addEventListener("click", async () => {
+      if (!selectedCottage) return;
+
+      const paymentMethod = paymentSelect.value;
+
+      if (paymentMethod === "stripe") {
+        try {
+          showLoading(true);
+          const response = await fetch("http://localhost:5000/create-checkout-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: currentUserId,         
+              cottageId: selectedCottage.id,
+              name: selectedCottage.name,
+              price: selectedCottage.price
+            }),
+          });
+
+          const session = await response.json();
+          showLoading(false);
+
+          if (session.id) {
+            await stripe.redirectToCheckout({ sessionId: session.id });
+          } else {
+            console.error("Stripe session error:", session);
+            showToast("❌ Unable to start payment. Try again.", true);
+          }
+        } catch (err) {
+          showLoading(false);
+          console.error("Payment error:", err);
+          showToast("❌ Payment failed.", true);
+        }
+
+      } else if (paymentMethod === "cash") {
+        // === Cash Payment ===
+        try {
+          showLoading(true);
+          const response = await fetch("http://localhost:5000/create-cash-booking", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: currentUserId,
+              cottageId: selectedCottage.id,
+              name: selectedCottage.name,
+              price: selectedCottage.price
+            }),
+          });
+
+          const data = await response.json();
+          showLoading(false);
+
+          if (data.success) {
+            showToast("✅ Booking confirmed! Please pay in cash at the resort.");
+            bookingModal.style.display = "none";
+            showLoading(true);
+            window.location.href = `/Client_Side/html/profilepage.html`;
+          } else {
+            showToast("❌ Failed to create cash booking.", true);
+          }
+
+        } catch (err) {
+          showLoading(false);
+          console.error("Cash booking error:", err);
+          showToast("❌ Error creating cash booking.", true);
+        }
+      }
+    });
+  }
+});
+
+
+

@@ -244,10 +244,10 @@ html,body {
   text-align: center;
   height: 60px;
   width: 300px;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   flex: 1;
   appearance: none;    
   /* -----------arrow------------ */
@@ -258,8 +258,6 @@ html,body {
   cursor:pointer;
 }
 .search-container select option {
-  cursor:pointer;
-  width: 100%;
   font-size: 1.2rem;  
   text-align: center;
 }
@@ -295,6 +293,24 @@ html,body {
   padding: 10px;
   border-radius: 5px;
 }
+
+.sticky-profile{
+  display: none;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-left: 120px;
+  background-color: #5FADE5;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.sticky-profile i{
+  color:#ffffff;
+}
+
 .search-container.sticky {
   justify-content: flex-start;
   position: fixed;
@@ -318,6 +334,12 @@ html,body {
 }
 .search-container.sticky .sticky-logo {
   display: block;
+  animation: fadeSlideIn 0.4s ease forwards;
+}
+.search-container.sticky .sticky-profile {
+  display: flex; 
+  align-items: center;
+  justify-content: center;
   animation: fadeSlideIn 0.4s ease forwards;
 }
 
@@ -355,7 +377,7 @@ html,body {
 .cottage-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
+  gap: 50px;
   justify-items: center;
 }
 
@@ -452,6 +474,178 @@ transform: scale(1.1);
 
 
 /* Modal Styles */
+/* BOOKING MODAL BASE */
+.booking-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.booking-content {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 25px;
+  max-width: 750px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.close-booking {
+  position: absolute;
+  left: 20px;     
+  top: 15px;
+  font-size: 28px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-booking:hover {
+  color: #e63946;
+}
+
+/* MODAL BODY */
+.booking-body {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.booking-left {
+  flex: 1;
+}
+
+.modal-title {
+  font-size: 26px;
+  margin-bottom: 12px;
+  color: #023e8a;
+  font-weight: 600;
+}
+
+.modal-details {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.payment-method {
+  margin-top: 25px;
+}
+
+.payment-method label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #023e8a;
+}
+
+.payment-method select {
+  width: 80%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.payment-method select:focus {
+  outline: none;
+  border-color: #0077b6;
+  box-shadow: 0 0 5px rgba(0,119,182,0.3);
+}
+
+/* RIGHT SIDE */
+.booking-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.book-img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s;
+}
+
+.book-img:hover {
+  transform: scale(1.03);
+}
+
+.heart-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: #e63946;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* CONFIRM BUTTON */
+.confirm-btn {
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: #fff;
+  border: none;
+  padding: 15px 0;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background: linear-gradient(135deg, #023e8a, #0077b6);
+  transform: translateY(-2px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .booking-body {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .booking-right {
+    align-items: center;
+  }
+
+  .book-img {
+    max-height: 200px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
 .modal {
   display: none;
   position: fixed;
@@ -531,6 +725,7 @@ transform: scale(1.1);
   object-fit: cover;
   margin-bottom: 15px;
 }
+
 
 
 /* ---Contact----*/

@@ -689,10 +689,11 @@ html,body {
 }
 
 /* Circle Logos */
-.social-icons{
+.social-icons, .settings-icon{
   display: flex;
   gap: 20px;
   margin-top: 20px;
+
 }
 
 .social-icons img {
@@ -704,10 +705,36 @@ html,body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
+.settings-icon a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #2c2c2c;
+  font-weight: 540;
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.settings-icon i {
+  border-radius: 50%;
+  color:#5FADE5;
+  display: flex;
+  align-items: center;
+  font-size: 23px; 
+  justify-content: center;
+  background-color: #ffffff;
+  width: 40px;
+  height: 40px;
+}
 .social-icons img:hover {
   transform: scale(1.1);
 }
 
+.settings-icon i,.settings-icon a:hover {
+  transform: scale(1.1);
+}
 .copy-right {
   display: flex;
   font-size: 1rem;

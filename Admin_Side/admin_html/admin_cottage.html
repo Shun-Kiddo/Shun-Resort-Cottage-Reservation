@@ -17,10 +17,10 @@
     </div>
     <ul class="menu">
       <li><a href="/Admin_Side/admin_html/admin_dashboard.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
-      <li><a href="#" class="active"><i class="fa-solid fa-bed"></i> Cottages</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_cottage.html" class="active"><i class="fa-solid fa-campground"></i> </i> Cottages</a></li>
       <li><a href="/Admin_Side/admin_html/admin_user.html"><i class="fa-solid fa-user"></i> Users</a></li>
-      <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
-      <li><a href="#"><i class="fa-solid fa-money-bill-wave"></i> Payments</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_bookpage.html"><i class="fa-solid fa-calendar-check"></i> Bookings</a></li>
+      <li><a href="/Admin_Side/admin_html/admin_revenuepage.html"><i class="fa-solid fa-money-bill-wave"></i> Revenue</a></li>
       <li><a href="/Admin_Side/admin_html/admin_messages.html"><i class="fa-solid fa-envelope"></i> Messages</a></li>
       <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
     </ul>
@@ -120,6 +120,14 @@
     </form>
   </div>
 </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
 
   <script src="/Admin_Side/admin_script/admin_cottage.js"></script>
 </body>

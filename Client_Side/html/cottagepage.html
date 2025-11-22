@@ -24,7 +24,7 @@
             <li><a href="/Client_Side/html/homepage.html"><i class="fa-solid fa-house mobile-icon"></i> Home</a></li>
             <li><a href="/Client_Side/html/cottagepage.html" class="active"><i class="fa-solid fa-campground mobile-icon"></i> Cottage</a></li>
             <li><a href="#" id="openContactNav"><i class="fa-solid fa-phone mobile-icon"></i>Contact</a></li>
-            <li><a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket mobile-icon"></i> Logout</a></li>
+            <li><a href="/Client_Side/html/profilepage.html" ><i class="fa-solid fa-user mobile-icon"></i> Profile</a></li>
         </ul>
     </nav>
 
@@ -55,7 +55,13 @@
               <option value="" disabled selected hidden>Person Capacity</option>
             </select>
         </div>
-            <button class="search-button">Search</button>
+        <button class="search-button">Search</button>
+        
+        <div class="sticky-profile">
+          <a href="/Client_Side/html/profilepage.html" >
+            <i class="fa-solid fa-user"></i>
+          </a>
+        </div>
     </div>
 
     <!-- Cottage Container -->
@@ -65,6 +71,41 @@
 
       <div class="cottage-grid" id="cottageGrid">
         <!-- Cottages will be loaded here -->
+      </div>
+    </div>
+
+    <!-- ================= BOOKING MODAL ================= -->
+    <!-- BOOKING MODAL -->
+    <div id="bookingModal" class="booking-modal">
+      <div class="booking-content">
+        <span id="closeBookingModal" class="close-booking">&times;</span>
+
+        <div class="booking-body">
+          <!-- LEFT: Details + Payment -->
+          <div class="booking-left">
+            <h2 id="bookName" class="modal-title"></h2>
+            <p id="bookDetails" class="modal-details"></p>
+
+            <div class="payment-method">
+              <label for="paymentSelect">Payment Method</label>
+            <select id="paymentSelect">
+              <option value="stripe">Credit/Debit Card (Stripe)</option>
+              <option value="cash">Cash</option>
+            </select>
+            </div>
+          </div>
+
+          <!-- RIGHT: Image + Likes -->
+          <div class="booking-right">
+            <div class="image-wrapper">
+              <img id="bookImage" class="book-img" src="" alt="">
+              <div class="heart-badge">❤ <span id="heartCount">0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM: Confirm -->
+        <button id="payNowBtn" class="confirm-btn">Confirm Booking</button>
       </div>
     </div>
 
@@ -133,6 +174,7 @@
         </div>
 
         <h1 id="welcome"></h1>
+        <script src="https://js.stripe.com/v3/"></script>
         <script src="/Client_Side/script/cottagepage.js"></script>
   </body>
 </html>

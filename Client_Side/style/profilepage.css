@@ -1,0 +1,402 @@
+body {
+  margin: 0;
+  background: #f6fafc;
+  font-family: Arial, sans-serif;
+}
+
+/* Navbar */
+.profile-navbar {
+  width: 90%;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  background:  #f6fafc;
+  color: white;
+  position:absolute;     
+  left: 50%;           
+  transform: translateX(-50%);        
+  color: #f0f9ff;
+  justify-content: space-between;
+  align-items: center;
+  top: 0;
+}
+
+/* === Toast Notification === */
+.toast {
+  visibility: hidden;
+  min-width: 250px;
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 14px 18px;
+  position: fixed;
+  z-index: 9999;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.4s, bottom 0.4s;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+  bottom: 50px;
+}
+
+/* === Loading Spinner Overlay === */
+#loading-overlay {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(2px);
+}
+
+.spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #0077b6;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profile-navbar .logo {
+  font-weight: bold;
+  margin-right: 1rem;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+  background-color: #5FADE5;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.profile-navbar .highlight {
+  color: #CFDA77;
+}
+
+.profile-title {
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
+
+.close-btn {
+  margin-left: auto;
+  color: rgb(255, 0, 0);
+  font-size: 1.4rem;
+  text-decoration: none;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn.back {
+  background: #3ca4df;
+  color: white;
+}
+.btn.red {
+  background: #f00326cb;
+}
+.btn.back:hover {
+  background: #2a8fc4;
+}
+.btn.red:hover {
+  background: #c9011c;
+}
+
+/* Container */
+.profile-container {
+  width: 90%;
+  margin: 2rem auto;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 100px;
+}
+
+/* Profile Card */
+.profile-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.user i {
+  border-radius: 50%;
+  color:#ffffff;
+  display: flex;
+  align-items: center;
+  font-size: 50px; 
+  justify-content: center;
+  background-color: #5FADE5;
+  margin-bottom: 20px;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.profile-card h3{
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #003b57;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.profile-card h2 {
+  color:#212425;
+  margin: .2rem 0;
+  font-size: 1.6rem;
+}
+
+.profile-card p {
+  color: #555;
+  margin: .2rem 0 1.5rem;
+}
+
+/* Buttons */
+.profile-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn {
+  border: none;
+  padding: .8rem 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: .9rem;
+  color: white;
+}
+
+.btn.dark {
+  background:  #62673C;
+  margin-bottom: 20px;
+}
+
+.btn.dark:hover {
+   transform: scale(1.1);
+}
+
+/* Booking Section */
+.booking-section {
+  background: white;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.booking-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #003b57;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* Table */
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.booking-table th,
+.booking-table td {
+  padding: .75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.booking-table th {
+  background: #f0f6ff;
+  font-weight: bold;
+}
+
+/* === Modal Background === */
+.changePassword-modal {
+  display: none; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(3px);
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease-in-out;
+  z-index: 999;
+}
+
+/* === Modal Box === */
+.changePassword-modal-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+  animation: popup 0.2s ease-in-out;
+}
+
+/* Header */
+.changePassword-header {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #5FADE5;
+  font-weight: bold;
+}
+
+/* Close Button */
+.close-modal {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 1.4rem;
+  color: #888;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* Center the confirmation message text */
+#confirmationModal p {
+  text-align: center;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.close-modal:hover {
+  color: #e91e63;
+}
+
+/* Form */
+.changePassword-form label {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Input Container */
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Password Input */
+.changePassword-form input {
+  width: 100%;
+  padding: 10px 40px 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccd5e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.2s;
+}
+
+.changePassword-form input:focus {
+  border-color: #5FADE5;
+}
+
+/* Eye Icon */
+.password-container i {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #888;
+  transition: 0.2s;
+}
+
+.password-container i:hover {
+  color: #111;
+}
+
+/* Submit Button */
+.changePassword-form button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: #5FADE5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.changePassword-form button:hover {
+  background: #3d94c9;
+}
+
+/* Cancel Button in Booking List */
+.cancel-btn{
+  background: #f03a3a; /* red color */
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #c9011c; /* darker red on hover */
+  transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; } 
+  to { opacity: 1; }
+}
+
+@keyframes popup {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+/* Mobile */
+@media(max-width: 600px){
+  .profile-buttons {
+    flex-direction: column;
+  }
+  .booking-table th,
+  .booking-table td {
+    font-size: .8rem;
+  }
+}

@@ -12,6 +12,53 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.clear();
   window.location.href = "/Client_Side/auth/loginpage.html";
 });
+// === Toast Notification ===
+function showToast(message, isError = false) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.style.background = isError
+    ? "linear-gradient(135deg, #e63946, #d62828)"
+    : "linear-gradient(135deg, #0077b6, #00b4d8)";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+// Confirmation Modal
+function confirmAction(message, callbackYes) {
+  const confirmBox = document.createElement("div");
+  confirmBox.classList.add("confirm-box");
+
+  confirmBox.innerHTML = `
+    <div class="confirm-content">
+      <p>${message}</p>
+      <div class="confirm-buttons">
+        <button class="yes-btn">Yes</button>
+        <button class="no-btn">No</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(confirmBox);
+
+  const yesBtn = confirmBox.querySelector(".yes-btn");
+  const noBtn = confirmBox.querySelector(".no-btn");
+
+  yesBtn.addEventListener("click", () => {
+    confirmBox.remove();
+    if (callbackYes) callbackYes();
+  });
+
+  noBtn.addEventListener("click", () => {
+    confirmBox.remove();
+  });
+}
+
+
+// === Loading Overlay ===
+function showLoading(show) {
+  const overlay = document.getElementById("loading-overlay");
+  overlay.style.display = show ? "flex" : "none";
+}
 
 // === Elements ===
 const form = document.querySelector(".create-cottage");
@@ -50,7 +97,7 @@ async function loadCottages() {
                 <button class="menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                 <ul class="menu-options">
                   <li onclick="openUpdateModal(${c.id})"><i class="fa-solid fa-pen"></i> Update</li>
-                  <li onclick="deleteCottage(${c.id})"><i class="fa-solid fa-trash"></i> Delete</li>
+                  <li onclick="deleteCottage(${c.id}, '${c.name}')"><i class="fa-solid fa-trash"></i> Delete</li>
                 </ul>
               </div>
             </div>
@@ -78,30 +125,33 @@ async function loadCottages() {
   }
 }
 
-
 // === Create New Cottage ===
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(form);
 
   try {
+    showLoading(true);
     const res = await fetch("http://localhost:5000/admin-cottages/create", {
       method: "POST",
       body: formData,
     });
 
     const result = await res.json();
+    showLoading(false);
 
     if (res.ok) {
-      alert(result.message);
+      showToast(result.message); // Success toast
       form.reset();
       previewImg.style.display = "none";
       loadCottages();
     } else {
-      alert("Error: " + result.error);
+      showToast("Error: " + result.error, true); // Error toast
     }
   } catch (err) {
+    showLoading(false);
     console.error("Error creating cottage:", err);
+    showToast("❌ Error creating cottage", true); // Error toast
   }
 });
 
@@ -117,20 +167,23 @@ imageInput.addEventListener("change", (e) => {
   }
 });
 
-// === Delete Cottage ===
-async function deleteCottage(id) {
-  if (!confirm("Are you sure you want to delete this cottage?")) return;
-  try {
-    const res = await fetch(`http://localhost:5000/admin-cottages/${id}`, {
-      method: "DELETE"
-    });
-    const result = await res.json();
-    alert(result.message);
-    loadCottages();
-  } catch (err) {
-    console.error("Error deleting cottage:", err);
-  }
+async function deleteCottage(id, name) {
+  confirmAction(`Are you sure you want to delete <strong>${name}</strong>?`, async () => {
+    showLoading(true);
+    try {
+      const res = await fetch(`http://localhost:5000/admin-cottages/${id}`, { method: "DELETE" });
+      const result = await res.json();
+      showToast(result.message, !res.ok);
+      loadCottages();
+    } catch (err) {
+      console.error(err);
+      showToast("Error deleting cottage", true);
+    } finally {
+      showLoading(false);
+    }
+  });
 }
+
 
 // === Open Update Modal ===
 function openUpdateModal(id) {
@@ -162,28 +215,32 @@ function closeUpdateModal() {
   document.getElementById("updateModal").style.display = "none";
 }
 
-// === Update Cottage Submit ===
 document.getElementById("updateForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const id = document.getElementById("update_id").value;
   const formData = new FormData(e.target);
 
   try {
+    showLoading(true);
     const res = await fetch(`http://localhost:5000/admin-cottages/${id}`, {
       method: "PUT",
       body: formData
     });
+
     const result = await res.json();
+    showLoading(false);
 
     if (res.ok) {
-      alert(result.message);
+      showToast(result.message); // Success toast
       closeUpdateModal();
       loadCottages();
     } else {
-      alert("Error: " + result.error);
+      showToast("Error: " + result.error, true); // Error toast
     }
   } catch (err) {
+    showLoading(false);
     console.error("Error updating cottage:", err);
+    showToast("❌ Error updating cottage", true); // Error toast
   }
 });
 

@@ -1,0 +1,348 @@
+/* General Layout */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  height: 100vh;
+  background: #f5f7fa;
+  color: #333;
+  overflow: hidden; /* Prevent double scrollbars */
+}
+/* Toast Notification */
+#toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateY(-20px);
+  z-index: 9999;
+}
+#toast.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Loading Overlay */
+#loading-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Confirmation Box */
+.confirm-box {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.confirm-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.confirm-content strong {
+  color: #d62828;
+}
+.confirm-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+.yes-btn, .no-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.yes-btn {
+  background: #d62828;
+  color: white;
+}
+.no-btn {
+  background: #0077b6;
+  color: white;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #5fade5;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+
+  /* --- The magic --- */
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto; /* scroll inside sidebar if needed */
+}
+
+.sidebar-header {
+  text-align: center;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.sidebar-header .highlight {
+  color: #ffde4b;
+}
+
+.sidebar-header p {
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.menu li {
+  margin: 5px 0;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  transition: 0.3s;
+}
+
+.menu a:hover,
+.menu a.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto; /* this makes main scrollable */
+  height: 100vh;
+  margin-left: 250px; /* match sidebar width */
+  box-sizing: border-box;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #0077b6;
+}
+
+.topbar p {
+  color: #555;
+}
+
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* === Messages Section === */
+.user-section {
+  margin-top: 3rem;
+}
+
+.user-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.user-card:hover {
+  transform: translateY(-5px);
+}
+
+.user-info{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.sender {
+  font-weight: 600;
+  font-size: 15px;
+  margin: 0;
+ color: #0077b6;
+}
+
+.time {
+  font-size: 12px;
+  color: gray;
+  margin-top: 2px;
+}
+
+.user-section i {
+  color: #00b4d8;
+  font-size: 25px;
+  margin-right: 6px;
+}
+
+.confirm-btn i {
+  color: #28a745; 
+  font-size: 17px;
+  margin-right: -5px;
+}
+
+.confirm-btn {
+  cursor: pointer;
+  background-color: #fff;
+  border: none;
+  margin-top: 10px;
+}
+
+.confirm-btn:hover i{
+  color: #19692c;
+}
+
+.delete-btn i{
+  color: #dc3545;
+  font-size: 15px;
+  margin-right: 0;
+}
+
+.delete-btn {
+  background-color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.delete-btn i:hover {
+  color: #800e19;
+}
+
+
+
+/* ===== Modal background ===== */
+.modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== Modal box ===== */
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  color: #333;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+/* Profile content */
+.profile-pic i{
+  color: #00b4d8;
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.profile-content h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.profile-content p {
+  color: #666;
+  margin: 5px 0;
+}
+
+.profile-content small {
+  color: #888;
+  font-size: 12px;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+}
