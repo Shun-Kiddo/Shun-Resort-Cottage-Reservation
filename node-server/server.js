@@ -21,7 +21,6 @@ app.use("/Client_Side", express.static(path.join(__dirname, "../Client_Side")));
 
 // Serve uploaded cottage images
 app.use("/image/cottages", express.static(path.join(__dirname, "../image/cottages")));
-app.use("/image/customers", express.static(path.join(__dirname, "../image/customers")));
 
 // Serve single images you reference directly (like cottage_logo.png)
 app.use("/image", express.static(path.join(__dirname, "../image")));
