@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Splash Screen - Event Venue Booking</title>
+  <link rel="stylesheet" href="/Client_Side/style/splashscreen.css">
+  <link rel="icon" href="/image/cottage_logo.png" type="image/png">
+</head>
+
+<body>
+  <div id="splashScreen">
+    <img src="/image/cottage_logo.png" alt="Logo" class="logo">
+
+    <div class="typing-text">Shun <span class="highlight">Resort</span></div>
+
+    <div class="loader-bar">
+      <div class="progress"></div>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "/Client_Side/auth/loginpage.html";
+    }, 5000);
+  </script>
+</body>
+</html>

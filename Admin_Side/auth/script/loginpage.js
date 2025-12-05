@@ -8,11 +8,6 @@ document.onkeydown = e => {
 };
 */
 
-// Redirect if already logged in
-if (localStorage.getItem("authToken")) {
-  window.location.replace("/Client_Side/html/homepage.html");
-}
-
 // === Toast Notification ===
 function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
@@ -41,7 +36,7 @@ document.querySelector("form").addEventListener("submit", async (e) => {
 
   try {
     showLoading(true);
-    const response = await fetch("http://localhost:5000/login", {
+    const response = await fetch("http://localhost:5000/admin-login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -51,16 +46,13 @@ document.querySelector("form").addEventListener("submit", async (e) => {
     showLoading(false);
 
   if (response.ok) {
-    localStorage.setItem("authToken", result.token);
-    localStorage.setItem("userEmail", result.user.email);
-    localStorage.setItem("userId", result.user.id);
     document.querySelector("form").reset();
-    showLoading(true);
     showToast("Login successful! Redirecting...");
-    
+    showLoading(true);
+
     setTimeout(() => {
       showLoading(false);
-      window.location.replace("/Client_Side/html/homepage.html");
+      window.location.replace("/Admin_Side/admin_html/admin_dashboard.html");
     }, 2000);
   }else {
       showToast(result.message || "Invalid email or password", true);

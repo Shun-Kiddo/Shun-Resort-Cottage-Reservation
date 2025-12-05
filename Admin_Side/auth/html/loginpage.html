@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/Admin_Side/auth/style/loginpage.css">
+<title>Login - Shun Resort</title>
+<link rel="icon" type="image/png" href="/image/cottage_logo.png">
+</head>
+  <body>
+    <!-- LEFT: Login Form -->
+    <div class="form-box">
+          <h2 class="login-account-title" style="margin-bottom: -2px; font-size: 30px;">ADMIN</h2>
+          <h2 class="login-account-title">LOGIN YOUR ACCOUNT</h2>
+          <form>
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <div class="password-container">
+              <input type="password" id="password" placeholder="Enter your password" required>
+              <i class="fa-solid fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+            </div>
+            
+              <button type="submit">Sign In</button>
+
+            <p class="small-text">Don't have an account? | <a href="/Admin_Side/auth/html/signup_page.html">Sign up</a></p>
+          </form>
+    </div>
+
+        <!-- RIGHT: Resort Text -->
+        <div class="right-side-text">
+          <h1>
+            <a href="/Client_Side/html/landingpage.html">
+              WELCOME TO SHUN 
+              <span class="highlight">
+                RESORT
+              </span>
+            </a>
+          </h1>
+
+          <p>
+            BOOK YOUR COTTAGE<br>
+            EARLY FOR A RELAXING<br>
+            GATEWAY.
+          </p>
+          <p class="line"></p>
+
+          <!-- Two circular images below -->
+        <div class="circle-container">
+          <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/facebook.png" alt="Facebook"></a>
+          <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/instagram-logo.png" alt="Instagram"></a>
+          <a href="/Client_Side/html/errorpage.html" target="_blank"><img src="/image/tiktok.webp" alt="tiktok"></a>
+        </div>
+    </div>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+    <script src="/Admin_Side/auth/script/loginpage.js"></script>
+  </body>
+</html>

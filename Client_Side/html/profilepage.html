@@ -24,7 +24,13 @@
   <!-- User Card -->
   <div class="profile-card">
     <h3>Profile Information</h3>
-    <a class="user"><i class="fa-solid fa-user"></i></a>
+      <!-- Profile Image -->
+      <div class="user" id="profile-img">
+        <i class="fa-solid fa-user"></i>
+        <span class="tooltip-text">Click to change the Profile</span>
+        <input type="file" id="profileInput" accept="image/*" style="display:none;">
+      </div>
+    <input type="file" id="profileInput" accept="image/*" style="display:none;" />
     <h2 id="usernameDisplay">Shun Kiddo</h2>
     <p  id="useremailDisplay">kiddo@example.com</p>
     
@@ -46,7 +52,7 @@
           <th>Capacity</th>
           <th>Check-in</th>
           <th>Status</th>
-          <th></th>
+          <th>Action Button</th>
         </tr>
       </thead>
       <tbody id="bookingList">
@@ -106,6 +112,13 @@
   <div id="loading-overlay">
     <div class="spinner"></div>
   </div>
+
+  <footer>
+  <p class="copy-right">
+      &copy; 2024 &nbsp;
+      <a href="/Client_Side/html/homepage.html">Shun Resort</a>.&nbsp;All rights reserved.
+  </p>  
+</footer> 
 <script src="/Client_Side/script/profilepage.js"></script>
 </body>
 </html>

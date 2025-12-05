@@ -11,3 +11,7 @@ if (bookingId) {
   .then(data => console.log(data.message))
   .catch(err => console.error(err));
 }
+
+setTimeout(() => {
+  window.location.href = "/Client_Side/html/profilepage.html";
+}, 3000);

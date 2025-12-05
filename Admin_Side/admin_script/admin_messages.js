@@ -10,7 +10,7 @@ links.forEach(link => {
 // === Logout Button ===
 document.getElementById("logoutBtn").addEventListener("click", () => {
   localStorage.clear();
-  window.location.href = "/Client_Side/auth/loginpage.html";
+  window.location.href = "/Admin_Side/auth/html/loginpage.html";
 });
 
 // === Toast Notification ===

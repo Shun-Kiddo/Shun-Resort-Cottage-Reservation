@@ -19,19 +19,13 @@ function showLoading(show) {
 document.getElementById("logoutBtn").addEventListener("click", () => {
   if(confirm("Are you sure you want to logout?")){
     localStorage.clear();
-    window.location.href = "/Client_Side/auth/loginpage.html";
+    window.location.href = "/Admin_Side/auth/html/loginpage.html";
   }
 });
 
 async function fetchRevenue() {
   showLoading(true);
   try {
-    // Fetch revenue data from backend
-    // Expected response format:
-    // {
-    //   totalRevenue: 1234567,
-    //   monthly: [ { month: "Jan", revenue: 10000 }, ... ]
-    // }
     const res = await fetch("http://localhost:5000/admin-revenue");
     const data = await res.json();
 
@@ -50,8 +44,8 @@ async function fetchRevenue() {
         datasets: [{
           label: "Revenue (₱)",
           data: revenue,
-          backgroundColor: "rgba(0, 123, 255, 0.7)",
-          borderColor: "rgba(0, 123, 255, 1)",
+          backgroundColor: "rgba(6, 248, 27, 1)",
+          borderColor: "rgba(6, 248, 27, 1)",
           borderWidth: 1
         }]
       },

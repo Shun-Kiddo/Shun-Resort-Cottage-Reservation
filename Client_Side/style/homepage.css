@@ -139,7 +139,6 @@ html,body {
   transition: stroke-dashoffset 0.2s linear;
 }
 
-
 /* Logo */
 .navbar .logo {
   color: #f0f9ff;
@@ -346,17 +345,16 @@ html,body {
   font-size: 1rem;
   flex: 1;
   appearance: none;    
-  /* arrow */
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'><path fill='black' d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 1rem center;  /* control spacing of arrow */
+  background-position: right 1rem center;
   background-size: 30px;
 }
 
 .search-container select option {
   width: 100%;
-  font-size: 1.2rem;  /* resize option text */
-  text-align: center; /* center the text inside option list */
+  font-size: 1.2rem;  
+  text-align: center; 
 }
 
 .search-button {
@@ -442,6 +440,14 @@ html,body {
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
+  filter: blur(3px);       
+  transition: filter 0.4s ease;
+}
+
+.coverflow-item:hover img {
+  transform: scale(1.1);
+  transition: transform 0.4s ease;
+  filter: blur(0px);      
 }
 
 .coverflow-item.active {
@@ -451,20 +457,45 @@ html,body {
   pointer-events: auto;
 }
 
-.circle-btn {
+.cover-label {
   position: absolute;
-  bottom: 20px;      
-  right: 20px;      
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: bold;
+  color: rgb(255, 255, 255); 
+  pointer-events: none; 
+  z-index: 1;
+}
+
+.coverflow-item:hover .cover-label {
+  opacity: 0;       
+  pointer-events: auto; 
+} 
+
+.coverflow-item:hover .circle-btn {
+  opacity: 1;       
+  pointer-events: auto; 
+}
+
+.circle-btn {
+  pointer-events: none;
+  opacity: 0;   
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.8);
-  color: #333;
+  color: #fff;
   font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  z-index: 3;
   transition: background 0.2s, transform 0.3s;
 }
 
@@ -705,7 +736,7 @@ html,body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-.settings-icon a {
+.settings-icon,.profile-img a {
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -717,7 +748,7 @@ html,body {
   transition: all 0.3s ease;
 }
 
-.settings-icon i {
+.settings-icon,.profile-img i {
   border-radius: 50%;
   color:#5FADE5;
   display: flex;
@@ -728,6 +759,7 @@ html,body {
   width: 40px;
   height: 40px;
 }
+
 .social-icons img:hover {
   transform: scale(1.1);
 }

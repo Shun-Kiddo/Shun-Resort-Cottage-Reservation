@@ -13,3 +13,7 @@ fetch('https://localhost:5000/booking-cancel', {
 })
 .catch(err => console.error(err));
 }
+
+setTimeout(() => {
+  window.location.href = "/Client_Side/html/profilepage.html";
+}, 3000);

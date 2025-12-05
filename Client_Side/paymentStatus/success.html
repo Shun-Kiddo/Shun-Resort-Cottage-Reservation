@@ -4,114 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Successful - Shun Resort</title>
-  <link rel="icon" type="image/png" href="/image/cottage_logo.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-<style>
-/* Reset + base */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-body, html { height: 100%; overflow-x: hidden; }
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: 
-    linear-gradient(rgba(0, 83, 116, 0.5), rgba(0, 83, 116, 0.5)), 
-    url('/image/beach.webp') no-repeat center center/cover;
-  padding: 20px;
-}
-
-/* Container (like form) */
-.container {
-  background: rgba(0, 0, 0, 0.5);       /* dark semi-transparent */
-  backdrop-filter: blur(5px);           /* blur effect */
-  padding: 50px 40px;
-  border-radius: 15px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-  max-width: 450px;
-  width: 100%;
-  text-align: center;
-  color: #fff;                           /* text color */
-  animation: slideIn 0.8s ease-in-out;
-}
-
-/* Icon */
-.icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  color: #37ff06;
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-  width: 100px;
-  height: 100px;
-}
-
-/* Heading & Text */
-.container h1 {
-  font-size: 2rem;
-  color: #CFDA77;
-  margin-bottom: 15px;
-}
-
-.container p {
-  font-size: 1.1rem;
-  color: #fff;
-  margin-bottom: 30px;
-  line-height: 1.5;
-}
-
-/* Button */
-.btn {
-  display: inline-block;
-  padding: 12px 30px;
-  background: #5FADE5;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  background: #3c91d9;
-  transform: scale(1.05);
-}
-
-/* Animations */
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(50px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive */
-@media(max-width: 600px) {
-  .container {
-    padding: 35px 25px;
-  }
-  .container h1 {
-    font-size: 1.8rem;
-  }
-  .container p {
-    font-size: 1rem;
-  }
-  .icon {
-    font-size: 3.5rem;
-    padding: 15px;
-  }
-}
-</style>
+   <link rel="icon" type="image/png" href="/image/cottage_logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="/Client_Side/style/paymentstyle.css"/>
 </head>
 <body>
   <div class="container">
     <div class="icon"><i class="fas fa-check"></i></div>
     <h1>Payment Successful</h1>
     <p>Thank you for your booking! Your payment has been processed successfully.</p>
-    <a href="/Client_Side/html/homepage.html" class="btn">Go to Home</a>
   </div>
   <script src="/Client_Side/script/successpage.js"></script>
 </body>

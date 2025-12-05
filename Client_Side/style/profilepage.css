@@ -145,20 +145,60 @@ body {
   margin-right: auto;
 }
 
-.user i {
-  border-radius: 50%;
-  color:#ffffff;
-  display: flex;
-  align-items: center;
-  font-size: 50px; 
-  justify-content: center;
-  background-color: #5FADE5;
-  margin-bottom: 20px;
+.user {
   width: 100px;
   height: 100px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background-color: #5FADE5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
 }
+
+/* Tooltip */
+.tooltip-text {
+  position: absolute;
+  bottom: -35px; 
+  left: 50%;
+  transform: translateX(-50%);
+  background:  #5FADE5;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, bottom 0.3s ease;
+  z-index: 10001;
+}
+
+.user:hover .tooltip-text {
+  opacity: 1;
+  visibility: visible;
+  bottom: -30px;
+}
+
+
+.user i {
+  font-size: 50px;
+  color: white;
+}
+
+.user img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .profile-card h3{
   margin-top: 0;
   margin-bottom: 1rem;
@@ -196,7 +236,7 @@ body {
 }
 
 .btn.dark {
-  background:  #62673C;
+  background:  #5FADE5;
   margin-bottom: 20px;
 }
 
@@ -362,8 +402,8 @@ body {
 }
 
 /* Cancel Button in Booking List */
-.cancel-btn{
-  background: #f03a3a; /* red color */
+.cancel-btn, .delete-btn {
+  background: #f03a3a; 
   color: white;
   padding: 6px 12px;
   border-radius: 6px;
@@ -373,8 +413,8 @@ body {
   transition: 0.2s;
 }
 
-.cancel-btn:hover {
-  background: #c9011c; /* darker red on hover */
+.cancel-btn,.delete-btn:hover {
+  background: #c9011c;
   transform: scale(1.05);
 }
 
@@ -389,6 +429,19 @@ body {
   to { transform: scale(1); opacity: 1; }
 }
 
+.copy-right {
+  display: flex;
+  font-size: 1rem;
+  justify-content: center;
+}
+
+.copy-right a{
+  text-decoration: none;
+  color:#5FADE5
+}
+.copy-right a:hover{
+  color:#0400ff
+}
 
 /* Mobile */
 @media(max-width: 600px){

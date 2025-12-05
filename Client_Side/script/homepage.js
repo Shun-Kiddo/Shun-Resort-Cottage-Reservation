@@ -4,7 +4,7 @@ document.addEventListener("contextmenu", e => e.preventDefault());
 document.onkeydown = e => {
   if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
     e.preventDefault();
-  }
+  } 
 };
 */
 
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/get-user-name?email=${encodeURIComponent(userEmail)}`, {
+    const res = await fetch(`http://localhost:5000/get-user-info?email=${encodeURIComponent(userEmail)}`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -75,13 +75,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+document.addEventListener("DOMContentLoaded", async () => {
+  const userEmail = localStorage.getItem("userEmail");
+  const nameSpan = document.getElementById("usernameDisplay");
+  const profileIcon = document.getElementById("profileIcon");
+  const profileImg = document.getElementById("profileHeaderImage");
 
+  if (!userEmail) {
+    nameSpan.textContent = "Guest";
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:5000/get-user-info?email=${encodeURIComponent(userEmail)}`);
+    const data = await res.json();
+
+    nameSpan.textContent = data.name || "User";
+
+    // Load image if exists
+    if (data.profileImage) {
+      profileIcon.style.display = "none";
+      profileImg.style.display = "inline-block";
+      profileImg.src = `http://localhost:5000${data.profileImage}`;
+    }
+
+  } catch (err) {
+    console.error("Header load failed:", err);
+    nameSpan.textContent = "User";
+  }
+});
 
 
 // Prevent back navigation to login page
 window.history.pushState(null, null, window.location.href);
 window.onpopstate = () => window.history.go(1);
-
 
 const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.dot');
@@ -231,13 +258,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.getElementById("searchBtn").addEventListener("click", () => {
   const type = document.getElementById("cottage-type-label").value;
   const capacity = document.getElementById("person-capacity-label").value;
-
-  // redirect to cottagepage.html with the selected filters
  const url = `cottagepage.html?type=${encodeURIComponent(type)}&capacity=${encodeURIComponent(capacity)}`;
   window.location.href = url;
 });
 
-// Employee Modal
+//=========Employee Modal
 const modal = document.getElementById("employeeModal");
   const openBtn = document.getElementById("openPartners");
   const closeBtn = document.getElementById("closeModal");
@@ -276,8 +301,6 @@ const closeContactModal = document.getElementById("closeContactModal");
 if (closeContactModal) {
   closeContactModal.addEventListener("click", () => {
     contactModal.style.display = "none";
-
-    //Removing active color
     const navLinks = document.querySelectorAll(".nav-links a");
     if (navLinks[2]) {
       navLinks[2].classList.remove("active");

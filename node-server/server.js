@@ -21,6 +21,7 @@ app.use("/Client_Side", express.static(path.join(__dirname, "../Client_Side")));
 
 // Serve uploaded cottage images
 app.use("/image/cottages", express.static(path.join(__dirname, "../image/cottages")));
+app.use("/image/customers", express.static(path.join(__dirname, "../image/customers")));
 
 // Serve single images you reference directly (like cottage_logo.png)
 app.use("/image", express.static(path.join(__dirname, "../image")));
@@ -42,6 +43,7 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   }
 });
+
 const upload = multer({ storage });
 
 
@@ -75,10 +77,10 @@ db.connect(err => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, "../Client_Side/html/landingpage.html"));
+  res.sendFile(path.join(__dirname, "../Client_Side/auth/splashscreen.html"));
 });
 
-// Signup route (optional)
+// Signup
 app.post('/signup', (req, res) => {
   const { c_full_name, c_gmail, c_password } = req.body;
 
@@ -244,13 +246,10 @@ app.get('/verifyToken', (req, res) => {
   });
 });
 
-// Serve homepage file only
-app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, "../Client_Side/html/homepage.html"));
-});
 
 // Get User Name
-app.get('/get-user-name', async (req, res) => {
+//Profile
+app.get('/get-user-info', async (req, res) => {
   try {
     const email = req.query.email;
     if (!email) {
@@ -258,12 +257,15 @@ app.get('/get-user-name', async (req, res) => {
     }
 
     const [rows] = await db.promise().query(
-      "SELECT c_full_name FROM customer WHERE c_gmail = ?",
+      "SELECT c_full_name, profile_image FROM customer WHERE c_gmail = ?",
       [email]
     );
 
     if (rows.length > 0) {
-      res.json({ name: rows[0].c_full_name }); 
+      res.json({
+        name: rows[0].c_full_name,
+        profileImage: rows[0].profile_image
+      });
     } else {
       res.status(404).json({ error: "User not found" });
     }
@@ -274,7 +276,27 @@ app.get('/get-user-name', async (req, res) => {
 });
 
 
-//Profile
+//Upload-profile
+app.post("/upload-profile", upload.single("profile"), (req, res) => {
+  const { email } = req.body;
+
+  if (!email || !req.file) {
+    return res.status(400).json({ message: "Email and image are required" });
+  }
+
+  // Use the same URL pattern as cottages
+  const imagePath = `/image/cottages/${req.file.filename}`;
+
+  const query = `UPDATE customer SET profile_image = ? WHERE c_gmail = ?`;
+  db.query(query, [imagePath, email], (err, result) => {
+    if(err) return res.status(500).json({ message: err.message });
+    if(result.affectedRows === 0) return res.status(404).json({ message: "Email not found" });
+
+    res.json({ message: "Profile image uploaded successfully", path: imagePath });
+  });
+});
+
+// get the book specifc user
 app.get("/user-bookings/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -310,7 +332,6 @@ app.post("/booking-cancel", async (req, res) => {
   }
 
   try {
-    // 1️⃣ Get the cottage_id for this booking
     const [rows] = await db.promise().query(
       "SELECT cottage_id FROM bookings WHERE id = ?",
       [bookingId]
@@ -376,7 +397,6 @@ app.post("/change-password", async (req, res) => {
     }
   );
 });
-
 
 //Cottage
 app.post("/create-checkout-session", async (req, res) => {
@@ -473,10 +493,6 @@ app.post('/booking-success', async (req, res) => {
     res.status(500).json({ message: 'Failed to update booking/cottage' });
   }
 });
-
-
-
-
 
 // Contact route for Home Page
 app.post("/contact-home", (req, res) => {
@@ -800,6 +816,47 @@ app.delete("/admin-messages/:id", (req, res) => {
 
 
 /* ==================== ADMIN - COTTAGE MANAGEMENT ==================== */
+
+// Admin-Signup
+app.post('/admin-signup', (req, res) => {
+  const { a_full_name, a_gmail, a_password } = req.body;
+
+  if (!a_full_name || !a_gmail || !a_password) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const hashedPassword = bcrypt.hashSync(a_password, 10);
+
+  const sql = 'INSERT INTO admin(a_full_name, a_gmail, a_password) VALUES (?, ?, ?)';
+  db.query(sql, [a_full_name, a_gmail, hashedPassword], (err, result) => {
+    if (err) {
+      console.error("MySQL Error:", err);
+      return res.status(500).json({ error: "Database error", details: err.sqlMessage });
+    }
+    res.json({ message: 'Account created successfully!', id: result.insertId });
+  });
+});
+
+//Admin Login route
+app.post('/admin-login', (req, res) => {
+  const { email, password } = req.body;
+
+  const sql = 'SELECT * FROM admin WHERE a_gmail = ?';
+  db.query(sql, [email], (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    if (results.length === 0) return res.status(401).json({ message: 'Invalid email or password' });
+
+    const user = results[0];
+    const passwordMatch = bcrypt.compareSync(password, user.a_password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    res.json({message: `Login successful`});
+  });
+});
+
 /* Cottage Available Count */
 app.get('/admin-cottages-available',(req,res) => {
     const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";
@@ -1019,7 +1076,6 @@ app.patch("/admin-bookings/confirm-payment/:id", async (req, res) => {
 
 
 /*===============Total Revenue=============== */
-
 // === Total Revenue===
 app.get("/admin-total-revenue", async (req, res) => {
   try {

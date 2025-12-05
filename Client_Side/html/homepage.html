@@ -78,17 +78,20 @@
   <div class="coverflow-container">
       <button class="nav-btn left">&#10094;</button>
       <div class="coverflow-wrapper">
+        <div class="coverflow-item">
+          <img src="/image/bamboo.webp"alt="Beach">
+          <span class="cover-label">Wood</span>
+          <a href="https://share.google/8yFrxgQfG7f1CWVlP" class="circle-btn" target="_blank"></a>
+        </div>
         <div class="coverflow-item active">
-          <img src="/image/cabin1.jpg"alt="Beach">
-          <a href="/Client_Side/html/errorpage.html" class="circle-btn" target="_blank"></a>
+          <img src="/image/wood.avif" alt="Mountains">
+          <span class="cover-label">Bamboo</span>
+          <a href="https://share.google/mYHiPM10xD25DWLkP"class="circle-btn" target="_blank"></a>
         </div>
         <div class="coverflow-item">
-          <img src="/image/cabin3.jpg" alt="Mountains">
-          <a href="/Client_Side/html/errorpage.html"class="circle-btn" target="_blank"></a>
-        </div>
-        <div class="coverflow-item">
-          <img src="/image/cabin2.jpg" alt="City">
-          <a href="/Client_Side/html/errorpage.html" class="circle-btn" target="_blank"></a>
+          <img src="/image/conrete.avif" alt="City">
+          <span class="cover-label">Concrete</span>
+          <a href="https://share.google/kN7vfhkYNgH84BAsb" class="circle-btn" target="_blank"></a>
         </div>
       </div>
       <button class="nav-btn right">&#10095;</button>
@@ -147,9 +150,11 @@
     <h3>Profile</h3>
     <p class="header-line"></p>
 
-    <div class="settings-icon">
+    <div class="profile-img">
       <a href="/Client_Side/html/profilepage.html">
-        <i class="fa-solid fa-user"></i> <span id="usernameDisplay"></span>
+        <i class="fa-solid fa-user" id="profileIcon"></i>
+        <img id="profileHeaderImage" style="display:none; width:30px; height:30px; border-radius:50%;">
+        <span id="usernameDisplay"></span>
       </a>
     </div>
 </div>

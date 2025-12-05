@@ -407,7 +407,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeBookingModal = document.getElementById("closeBookingModal");
   const confirmBookingBtn = document.getElementById("confirmBooking");
   const payNowBtn = document.getElementById("payNowBtn");
-  const paymentSelect = document.getElementById("paymentSelect"); // <select> for payment
+  const paymentSelect = document.getElementById("paymentSelect");
 
   let selectedCottage = null;
 
@@ -516,12 +516,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const data = await response.json();
           showLoading(false);
-
           if (data.success) {
             showToast("✅ Booking confirmed! Please pay in cash at the resort.");
             bookingModal.style.display = "none";
             showLoading(true);
-            window.location.href = `/Client_Side/html/profilepage.html`;
+
+            setTimeout(() => {
+              window.location.href = `/Client_Side/html/profilepage.html`;
+            }, 2000);
           } else {
             showToast("❌ Failed to create cash booking.", true);
           }

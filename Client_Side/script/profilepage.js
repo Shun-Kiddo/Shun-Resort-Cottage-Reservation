@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        const res = await fetch(`http://localhost:5000/get-user-name?email=${encodeURIComponent(userEmail)}`, {
+        const res = await fetch(`http://localhost:5000/get-user-info?email=${encodeURIComponent(userEmail)}`, {
         method: "GET",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -77,6 +77,77 @@ document.addEventListener("DOMContentLoaded", async () => {
         useremailSpan.textContent = "guest@example.com";
         usernameSpan.textContent = "Guest";
     }
+});
+const profileDiv = document.getElementById("profile-img");
+const profileIcon = profileDiv.querySelector("i");
+const profileInput = document.getElementById("profileInput");
+const usernameDisplay = document.getElementById("usernameDisplay");
+
+// Fetch user info from backend
+async function loadUserProfile() {
+  try {
+    const res = await fetch(`http://localhost:5000/get-user-info?email=${userEmail}`);
+    const data = await res.json();
+
+    if(data.name) {
+      usernameDisplay.textContent = data.name;
+    }
+
+    if(data.profileImage) {
+      profileIcon.style.display = "none";
+      let img = profileDiv.querySelector("img");
+      if(!img) {
+        img = document.createElement("img");
+        profileDiv.appendChild(img);
+      }
+      img.src = `http://localhost:5000${data.profileImage}`;
+      img.alt = "Profile Picture";
+    }
+  } catch(err) {
+    console.error("Failed to load user profile:", err);
+  }
+}
+
+// Call on page load
+window.addEventListener("load", loadUserProfile);
+
+// --- Upload new profile image ---
+profileDiv.addEventListener("click", () => profileInput.click());
+
+profileInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+
+  // Preview immediately
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    profileIcon.style.display = "none";
+    let img = profileDiv.querySelector("img");
+    if(!img) {
+      img = document.createElement("img");
+      profileDiv.appendChild(img);
+    }
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+
+  // Upload to backend
+  const formData = new FormData();
+  formData.append("profile", file);
+  formData.append("email", userEmail);
+
+  try {
+    const res = await fetch("http://localhost:5000/upload-profile", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    if(data.path) {
+      console.log("Profile image uploaded:", data.path);
+    }
+  } catch(err) {
+    console.error("Upload failed:", err);
+  }
 });
 
 
@@ -269,11 +340,16 @@ async function fetchUserBookings(userId) {
 
     bookings.forEach(booking => {
       const tr = document.createElement("tr");
+      tr.setAttribute("data-id", booking.booking_id); // Important for localStorage delete
 
-      // Cancel button only for cash bookings
-      let cancelBtnHTML = "";
+      let actionBtnHTML = "";
+      // If CASH + confirmed ➜ Show Cancel button
       if (booking.payment_method === "cash" && booking.status === "confirmed") {
-        cancelBtnHTML = `<button class="cancel-btn" data-id="${booking.booking_id}">Cancel</button>`;
+        actionBtnHTML = `<button class="cancel-btn" data-id="${booking.booking_id}">Cancel</button>`;
+      }
+      // If PAID or cancelled ➜ Show Delete button (frontend-only)
+      if (booking.status === "paid" || booking.status === "cancelled") {
+        actionBtnHTML = `<button class="delete-btn" data-id="${booking.booking_id}">Delete</button>`;
       }
 
       tr.innerHTML = `
@@ -282,61 +358,95 @@ async function fetchUserBookings(userId) {
         <td>${booking.capacity}</td>
         <td>${new Date(booking.booking_date).toLocaleString()}</td>
         <td>${booking.status}</td>
-        <td>${cancelBtnHTML}</td>
+        <td>${actionBtnHTML}</td>
       `;
-
       bookingList.appendChild(tr);
     });
 
-// Attach cancel button click event
-  document.querySelectorAll(".cancel-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const bookingId = btn.dataset.id;
-      if (!bookingId) return;
+    // --- Cancel button ---
+    document.querySelectorAll(".cancel-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const bookingId = btn.dataset.id;
+        if (!bookingId) return;
 
-      showConfirmationModal({
-        title: "Cancel Booking",
-        message: "Are you sure you want to cancel this booking?",
-        onYes: async () => {
-          showToast("Cancelling booking...", false);
-          showLoading(true);
+        showConfirmationModal({
+          title: "Cancel Booking",
+          message: "Are you sure you want to cancel this booking?",
+          onYes: async () => {
+            showToast("Cancelling booking...", false);
+            showLoading(true);
 
-          try {
-            const res = await fetch("http://localhost:5000/booking-cancel", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ bookingId }),
-            });
+            try {
+              const res = await fetch("http://localhost:5000/booking-cancel", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bookingId }),
+              });
 
-            const data = await res.json();
-            showLoading(false);
+              const data = await res.json();
+              showLoading(false);
 
-            if (data.success) {
-              btn.closest("tr").remove();
-              showToast("✅ Booking cancelled successfully!");
-            } else {
-              showToast("❌ Failed to cancel booking.", true);
+              if (data.success) {
+                btn.closest("tr").remove();
+                showToast("✅ Booking cancelled successfully!");
+              } else {
+                showToast("❌ Failed to cancel booking.", true);
+              }
+            } catch (err) {
+              showLoading(false);
+              showToast("❌ Error cancelling booking.", true);
+              console.error(err);
             }
-          } catch (err) {
-            showLoading(false);
-            showToast("❌ Error cancelling booking.", true);
-            console.error(err);
+          },
+          onNo: () => {
+            location.reload();
           }
-        },
-        onNo: () => {
-          location.reload();
-        }
-
+        });
       });
     });
-  });
+
+    // --- Delete button (UI only, stored in localStorage) ---
+    document.querySelectorAll(".delete-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const row = btn.closest("tr");
+        const bookingId = btn.dataset.id;
+
+        showConfirmationModal({
+          title: "Delete Booking",
+          message: "This will hide the booking. Continue?",
+          onYes: () => {
+            // Save deleted booking in localStorage
+            let deleted = JSON.parse(localStorage.getItem("deletedBookings")) || [];
+            if (!deleted.includes(bookingId)) {
+              deleted.push(bookingId);
+              localStorage.setItem("deletedBookings", JSON.stringify(deleted));
+            }
+
+            // Remove from UI
+            row.remove();
+            showToast("🗑️ Booking deleted.");
+            location.reload();
+          },
+          onNo: () => {}
+        });
+      });
+    });
+
+    // --- Remove deleted bookings on load ---
+    const deleted = JSON.parse(localStorage.getItem("deletedBookings")) || [];
+    deleted.forEach(id => {
+      const row = document.querySelector(`tr[data-id="${id}"]`);
+      if (row) row.remove();
+    });
 
   } catch (err) {
     console.error("Error fetching bookings:", err);
   }
 }
 
+// Call the function
 fetchUserBookings(userID);
+
 
 
 
