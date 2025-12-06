@@ -36,14 +36,14 @@ async function resetPassword() {
   const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
   if (!newPassword || !confirmPassword)
-    return showToast("⚠️ Please fill in all fields", true);
+    return showToast("Please fill in all fields", true);
 
   if (newPassword !== confirmPassword)
-    return showToast("🚫 Passwords do not match!", true);
+    return showToast("Passwords do not match!", true);
 
   const email = localStorage.getItem("resetEmail");
   if (!email)
-    return showToast("❌ No email found. Please verify OTP again.", true);
+    return showToast("No email found. Please verify OTP again.", true);
 
   try {
     showLoading(true);
@@ -57,18 +57,18 @@ async function resetPassword() {
     showLoading(false);
 
     if (response.ok && result.success) {
-      showToast("✅ Password reset successful! Redirecting...");
+      showToast("Password reset successful! Redirecting...");
       localStorage.removeItem("resetEmail");
       setTimeout(() => {
         window.location.href = "/Client_Side/auth/loginpage.html";
       }, 1000);
     } else {
-      showToast(result.error || "⚠️ Failed to reset password.", true);
+      showToast(result.error || "Failed to reset password.", true);
     }
   } catch (error) {
     showLoading(false);
     console.error("Reset password error:", error);
-    showToast("🚫 Something went wrong. Try again later.", true);
+    showToast("Something went wrong. Try again later.", true);
   }
 }
 

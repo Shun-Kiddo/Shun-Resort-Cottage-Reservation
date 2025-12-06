@@ -42,7 +42,6 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   }
 });
-
 const upload = multer({ storage });
 
 
@@ -115,11 +114,20 @@ app.post('/login', (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ id: user.c_id, email: user.c_gmail },JWT_SECRET,{ expiresIn: "1h" });
+    if (user.is_blocked) {
+      return res.status(403).json({ message: 'Your account has been blocked. Contact admin.' });
+    }
 
-    res.json({message: `Login successful`,token,user: {id: user.c_id,name: user.c_full_name,email: user.c_gmail}});
+    const token = jwt.sign({ id: user.c_id, email: user.c_gmail }, JWT_SECRET, { expiresIn: "1h" });
+
+    res.json({
+      message: 'Login successful',
+      token,
+      user: { id: user.c_id, name: user.c_full_name, email: user.c_gmail }
+    });
   });
 });
+
 
 // forgot-password route
 app.post('/forgot', (req, res) => {
@@ -736,86 +744,6 @@ app.get("/cottages-search", async (req, res) => {
 /*===============ADMIN BACKEND=================== */
 
 /* ==================== ADMIN - USER MANAGEMENT ==================== */
-/* User List Count */
-app.get('/admin-total-users',(req,res) => {
-    const sql = "SELECT COUNT(*) AS total FROM customer";
-    db.query(sql, (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ total: result[0].total });
-  });
-});
-
-/* User List Display */
-app.get('/admin-user-list', (req,res) => {
-    const sql = `SELECT c_id,c_full_name,c_gmail,DATE_FORMAT(created_timestamp, '%m/%d/%Y %h:%i %p') AS formatted_date
-    FROM customer
-    ORDER BY created_timestamp DESC
-  `;
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error fetching user:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json(results);
-  });
-});
-
-/* User List Delete */
-app.delete("/admin-user-list/:id", (req, res) => {
-  const userId = req.params.id;
-  const sql = "DELETE FROM customer WHERE c_id = ?";
-
-  db.query(sql, [userId], (err, result) => {
-    if (err) {
-      console.error("Error deleting user:", err);
-      return res.status(500).json({ success: false, error: "Server error" });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    res.json({ success: true, message: "User deleted successfully" });
-  });
-});
-
-
-app.get('/admin-messages', (req,res) => {
-    const sql = `SELECT msg_id,full_name,email,message,source_page,DATE_FORMAT(created_at, '%m/%d/%Y %h:%i %p') AS formatted_date
-    FROM customer_message
-    ORDER BY created_at DESC
-  `;
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error fetching messages:", err);
-      return res.status(500).json({ error: "Database error" });
-    }
-    res.json(results);
-  });
-});
-
-app.delete("/admin-messages/:id", (req, res) => {
-  const messageId = req.params.id;
-  const sql = "DELETE FROM customer_message WHERE msg_id = ?";
-
-  db.query(sql, [messageId], (err, result) => {
-    if (err) {
-      console.error("Error deleting message:", err);
-      return res.status(500).json({ success: false, error: "Server error" });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "Message not found" });
-    }
-
-    res.json({ success: true, message: "Message deleted successfully" });
-  });
-});
-
-
-
-/* ==================== ADMIN - COTTAGE MANAGEMENT ==================== */
-
 // Admin-Signup
 app.post('/admin-signup', (req, res) => {
   const { a_full_name, a_gmail, a_password } = req.body;
@@ -856,6 +784,87 @@ app.post('/admin-login', (req, res) => {
   });
 });
 
+
+/* User List Count */
+app.get('/admin-total-users',(req,res) => {
+    const sql = "SELECT COUNT(*) AS total FROM customer";
+    db.query(sql, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ total: result[0].total });
+  });
+});
+
+/* User List Display */
+app.get('/admin-user-list', (req,res) => {
+    const sql = `SELECT c_id,c_full_name,c_gmail,DATE_FORMAT(created_timestamp, '%m/%d/%Y %h:%i %p') AS formatted_date,is_blocked
+    FROM customer
+    ORDER BY created_timestamp DESC
+  `;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching user:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+
+// Block user
+app.put("/admin-user-list/block/:id", (req, res) => {
+  const userId = req.params.id;
+  const sql = "UPDATE customer SET is_blocked = 1 WHERE c_id = ?";
+  db.query(sql, [userId], (err, result) => {
+    if (err) return res.status(500).json({ success: false, error: "Server error" });
+    res.json({ success: true, message: "User blocked" });
+  });
+});
+
+// Unblock user
+app.put("/admin-user-list/unblock/:id", (req, res) => {
+  const userId = req.params.id;
+  const sql = "UPDATE customer SET is_blocked = 0 WHERE c_id = ?";
+  db.query(sql, [userId], (err, result) => {
+    if (err) return res.status(500).json({ success: false, error: "Server error" });
+    res.json({ success: true, message: "User unblocked" });
+  });
+});
+
+app.get('/admin-messages', (req,res) => {
+    const sql = `SELECT msg_id,full_name,email,message,source_page,DATE_FORMAT(created_at, '%m/%d/%Y %h:%i %p') AS formatted_date
+    FROM customer_message
+    ORDER BY created_at DESC
+  `;
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching messages:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    res.json(results);
+  });
+});
+
+app.delete("/admin-messages/:id", (req, res) => {
+  const messageId = req.params.id;
+  const sql = "DELETE FROM customer_message WHERE msg_id = ?";
+
+  db.query(sql, [messageId], (err, result) => {
+    if (err) {
+      console.error("Error deleting message:", err);
+      return res.status(500).json({ success: false, error: "Server error" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: "Message not found" });
+    }
+
+    res.json({ success: true, message: "Message deleted successfully" });
+  });
+});
+
+
+
+/* ==================== ADMIN - COTTAGE MANAGEMENT ==================== */
 /* Cottage Available Count */
 app.get('/admin-cottages-available',(req,res) => {
     const sql = "SELECT COUNT(*) AS total FROM cottages WHERE availability = 'Available'";

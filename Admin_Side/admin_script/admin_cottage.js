@@ -141,17 +141,17 @@ form.addEventListener("submit", async (e) => {
     showLoading(false);
 
     if (res.ok) {
-      showToast(result.message); // Success toast
+      showToast(result.message); 
       form.reset();
       previewImg.style.display = "none";
       loadCottages();
     } else {
-      showToast("Error: " + result.error, true); // Error toast
+      showToast("Error: " + result.error, true); 
     }
   } catch (err) {
     showLoading(false);
     console.error("Error creating cottage:", err);
-    showToast("❌ Error creating cottage", true); // Error toast
+    showToast("Error creating cottage", true); 
   }
 });
 

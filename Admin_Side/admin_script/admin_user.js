@@ -47,6 +47,10 @@ async function fetchUserList() {
     userList.forEach(user => {
       const card = document.createElement("div");
       card.classList.add("user-card");
+      
+      const iconClass = user.is_blocked ? "fa-solid fa-check" : "fa-solid fa-ban";
+      const buttonTitle = user.is_blocked ? "Unblock User" : "Block User";
+
       card.innerHTML = `
         <a href="#" style="text-decoration: none; color: inherit;">
           <div class="user-info">
@@ -56,25 +60,27 @@ async function fetchUserList() {
               </p>
               <p class="time">${user.formatted_date}</p>
             </div>
-            <button class="delete-btn" data-id="${user.c_id}">
-              <i class="fa-solid fa-trash"></i>
+            <button class="block-btn" data-id="${user.c_id}" title="${buttonTitle}">
+              <i class="${iconClass}"></i>
             </button>
           </div>
         </a>
       `;
+
       userSection.appendChild(card);
 
       // Modal open
       card.addEventListener("click", e => {
-        if (!e.target.closest(".delete-btn")) openModal(user);
+        if (!e.target.closest(".block-btn")) openModal(user);
       });
 
-      // Delete button click
-      card.querySelector(".delete-btn").addEventListener("click", e => {
+      // Block/Unblock button click
+      card.querySelector(".block-btn").addEventListener("click", e => {
         e.stopPropagation();
-        confirmDelete(user.c_id, user.c_full_name || "this user");
+        toggleBlockUser(user.c_id, user.is_blocked);
       });
     });
+
 
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -99,12 +105,12 @@ window.addEventListener("click", e => {
 });
 
 // ====== Delete Confirmation ======
-function confirmDelete(id, fullName) {
+function confirmBlock(id, fullName) {
   const confirmBox = document.createElement("div");
   confirmBox.classList.add("confirm-box");
   confirmBox.innerHTML = `
     <div class="confirm-content">
-      <p>Are you sure you want to delete <strong>${fullName}</strong>?</p>
+      <p>Are you sure you want to block <strong>${fullName}</strong>?</p>
       <div class="confirm-buttons">
         <button id="confirmYes" class="yes-btn">Yes</button>
         <button id="confirmNo" class="no-btn">No</button>
@@ -115,7 +121,7 @@ function confirmDelete(id, fullName) {
 
   document.getElementById("confirmYes").addEventListener("click", async () => {
     confirmBox.remove();
-    await deleteUser(id);
+    await blockUser(id);
   });
 
   document.getElementById("confirmNo").addEventListener("click", () => {
@@ -123,24 +129,29 @@ function confirmDelete(id, fullName) {
   });
 }
 
-
-// ====== DELETE FUNCTION ======
-async function deleteUser(id) {
+// ====== BLOCK FUNCTION ======
+async function toggleBlockUser(id, currentlyBlocked) {
   showLoading(true);
   try {
-    const response = await fetch(`http://localhost:5000/admin-user-list/${id}`, {
-      method: "DELETE",
+    const action = currentlyBlocked ? "unblock" : "block";
+
+    const response = await fetch(`http://localhost:5000/admin-user-list/${action}/${id}`, {
+      method: "PUT",
     });
 
     if (response.ok) {
-      showToast("✅ User deleted successfully!");
-      fetchUserList();
+      const message = currentlyBlocked
+        ? "User account unblocked successfully!"
+        : "User account blocked successfully!";
+      showToast(message);
+
+      await fetchUserList();
     } else {
-      showToast("❌ Failed to delete user.", true);
+      showToast("❌ Failed to update user status.", true);
     }
   } catch (error) {
-    console.error("Error deleting user:", error);
-    showToast("❌ Error deleting user.", true);
+    console.error("Error updating user status:", error);
+    showToast("❌ Error updating user status.", true);
   } finally {
     showLoading(false);
   }

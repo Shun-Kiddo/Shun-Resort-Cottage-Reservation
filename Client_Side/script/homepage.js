@@ -341,8 +341,8 @@ document.querySelector(".contact-form").addEventListener("submit", async (e) => 
   const message = document.getElementById("contact-message").value.trim();
   const userEmail = localStorage.getItem("userEmail");
 
-  if (!userEmail) return showToast("⚠️ Please log in first", true);
-  if (!message) return showToast("✉️ Please enter a message", true);
+  if (!userEmail) return showToast("Please log in first", true);
+  if (!message) return showToast("Please enter a message", true);
 
   try {
     showLoading(true); 
@@ -356,16 +356,16 @@ document.querySelector(".contact-form").addEventListener("submit", async (e) => 
     showLoading(false); 
 
     if (response.ok && data.success) {
-      showToast("✅ Message sent successfully!");
+      showToast("Message sent successfully!");
       document.querySelector(".contact-form").reset();
       document.getElementById("contactModal").style.display = "none";
     } else {
-      showToast(data.error || "❌ Failed to send message", true);
+      showToast(data.error || "Failed to send message", true);
     }
   } catch (err) {
     showLoading(false);
     console.error("Contact form error:", err);
-    showToast("🚫 Something went wrong. Try again later.", true);
+    showToast("Something went wrong. Try again later.", true);
   }
 });
 

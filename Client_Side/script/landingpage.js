@@ -164,7 +164,7 @@ document.querySelectorAll('.contact-form').forEach(form => {
     const message = form.querySelector('#contact-message')?.value.trim();
 
     if (!fullName || !userEmail || !message) {
-      showToast("⚠️ Please enter all fields.", true);
+      showToast("Please enter all fields.", true);
       return;
     }
 
@@ -179,16 +179,16 @@ document.querySelectorAll('.contact-form').forEach(form => {
       showLoading(false);
 
       if (response.ok && data.success) {
-        showToast("✅ Message sent successfully!");
+        showToast("Message sent successfully!");
         form.reset();
         document.getElementById("contactModal").style.display = "none";
       } else {
-        showToast(data.message || "❌ Failed to send message.", true);
+        showToast(data.message || "Failed to send message.", true);
       }
     } catch (error) {
       showLoading(false);
       console.error("Contact form error:", error);
-      showToast("🚫 Something went wrong. Try again later.", true);
+      showToast("Something went wrong. Try again later.", true);
     }
   });
 });

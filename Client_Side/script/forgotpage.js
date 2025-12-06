@@ -15,8 +15,8 @@ function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
   toast.style.background = isError
-    ? "linear-gradient(135deg, #e63946, #d62828)" // red error
-    : "linear-gradient(135deg, #0077b6, #00b4d8)"; // resort blue
+    ? "linear-gradient(135deg, #e63946, #d62828)"
+    : "linear-gradient(135deg, #0077b6, #00b4d8)";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 3000);
 }
@@ -31,7 +31,7 @@ function showLoading(show) {
 async function sendOtp() {
   const emailInput = document.getElementById("email");
   const email = emailInput.value.trim();
-  if (!email) return showToast("⚠️ Please enter your email", true);
+  if (!email) return showToast("Please enter your email", true);
 
   try {
     showLoading(true);
@@ -45,7 +45,7 @@ async function sendOtp() {
     showLoading(false);
 
     if (response.ok && result.success) {
-      showToast("✅ OTP sent to your email!");
+      showToast("OTP sent to your email!");
       userEmail = email;
       emailInput.value = "";
 
@@ -53,13 +53,13 @@ async function sendOtp() {
       document.getElementById("otpStep").style.display = "block";
       document.querySelectorAll(".otp-box").forEach(input => (input.value = ""));
     } else {
-      showToast(result.error || "❌ Failed to send OTP", true);
+      showToast(result.error || "Failed to send OTP", true);
       emailInput.value = "";
     }
   } catch (err) {
     showLoading(false);
     console.error("Error:", err);
-    showToast("🚫 Server error. Try again later.", true);
+    showToast("Server error. Try again later.", true);
     emailInput.value = "";
   }
 }
@@ -70,7 +70,7 @@ async function verifyOtp() {
   const otp = Array.from(otpInputs).map(input => input.value).join("");
 
   if (otp.length !== 6)
-    return showToast("⚠️ Please enter a valid 6-digit OTP", true);
+    return showToast("Please enter a valid 6-digit OTP", true);
 
   try {
     showLoading(true);
@@ -85,26 +85,26 @@ async function verifyOtp() {
 
     if (response.ok && result.success) {
       localStorage.setItem("resetEmail", userEmail);
-      showToast("✅ OTP Verified! Redirecting...");
+      showToast("OTP Verified! Redirecting...");
       setTimeout(() => {
         window.location.href = "/Client_Side/auth/resetpassword.html";
       }, 1000);
     } else {
-      showToast(result.error || "❌ Invalid OTP. Try again.", true);
+      showToast(result.error || "Invalid OTP. Try again.", true);
       otpInputs.forEach(input => (input.value = ""));
       otpInputs[0].focus();
     }
   } catch (err) {
     showLoading(false);
     console.error("Error verifying OTP:", err);
-    showToast("🚫 Server error. Try again later.", true);
+    showToast("Server error. Try again later.", true);
     document.querySelectorAll(".otp-box").forEach(input => (input.value = ""));
   }
 }
 
 // === Resend OTP ===
 async function resendOtp() {
-  if (!userEmail) return showToast("⚠️ Enter your email first", true);
+  if (!userEmail) return showToast("Enter your email first", true);
 
   try {
     showLoading(true);
@@ -118,15 +118,15 @@ async function resendOtp() {
     showLoading(false);
 
     if (response.ok && result.success) {
-      showToast("✅ OTP resent to your email!");
+      showToast("OTP resent to your email!");
       document.querySelectorAll(".otp-box").forEach(input => (input.value = ""));
     } else {
-      showToast(result.error || "❌ Failed to resend OTP", true);
+      showToast(result.error || "Failed to resend OTP", true);
     }
   } catch (err) {
     showLoading(false);
     console.error("Error:", err);
-    showToast("🚫 Server error. Try again later.", true);
+    showToast("Server error. Try again later.", true);
   }
 }
 

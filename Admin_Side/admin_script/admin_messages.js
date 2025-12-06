@@ -114,14 +114,14 @@ async function deleteMessage(id) {
     });
 
     if (response.ok) {
-      showToast("✅ Message deleted successfully!");
+      showToast("Message deleted successfully!");
       fetchMessages();
     } else {
-      showToast("❌ Failed to delete message.", true);
+      showToast("Failed to delete message.", true);
     }
   } catch (error) {
     console.error("Error deleting message:", error);
-    showToast("❌ Error deleting message.", true);
+    showToast("Error deleting message.", true);
   } finally {
     showLoading(false);
   }

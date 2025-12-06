@@ -53,7 +53,7 @@
         const response = await fetch("http://localhost:5000/admin-total-revenue");
         const data = await response.json();
 
-        const total = Number(data.totalRevenue) || 0; // Convert to number
+        const total = Number(data.totalRevenue) || 0;
         document.getElementById("total-revenue").textContent = "₱" + total.toLocaleString(undefined, { maximumFractionDigits: 0 });
         
       } catch (error) {

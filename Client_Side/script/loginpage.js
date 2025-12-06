@@ -37,7 +37,7 @@ document.querySelector("form").addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  if (!email || !password) return showToast("⚠️ Please fill in all fields", true);
+  if (!email || !password) return showToast("Please fill in all fields", true);
 
   try {
     showLoading(true);
@@ -48,7 +48,7 @@ document.querySelector("form").addEventListener("submit", async (e) => {
     });
 
     const result = await response.json();
-    showLoading(false);
+    s
 
   if (response.ok) {
     localStorage.setItem("authToken", result.token);
@@ -69,7 +69,7 @@ document.querySelector("form").addEventListener("submit", async (e) => {
   } catch (err) {
     showLoading(false);
     console.error("Login error:", err);
-    showToast("🚫 Something went wrong. Try again later.", true);
+    showToast("Something went wrong. Try again later.", true);
   }
 });
 

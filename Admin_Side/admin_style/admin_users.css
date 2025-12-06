@@ -224,13 +224,13 @@ footer {
   margin-right: 6px;
 }
 
-.delete-btn i{
+.delete-btn,.block-btn i{
   color: #dc3545;
   font-size: 15px;
   margin-right: 0;
 }
 
-.delete-btn {
+.delete-btn,.block-btn {
   background-color: #fff;
   border: none;
   padding: 6px 10px;
@@ -245,7 +245,7 @@ footer {
 
 /* ===== Modal background ===== */
 .modal {
-  display: none; /* hidden by default */
+  display: none; 
   position: fixed;
   z-index: 1000;
   left: 0;

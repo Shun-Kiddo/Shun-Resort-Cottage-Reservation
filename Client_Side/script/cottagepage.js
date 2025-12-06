@@ -365,15 +365,14 @@ function showLoading(show) {
   const overlay = document.getElementById("loading-overlay");
   overlay.style.display = show ? "flex" : "none";
 }
+ const userEmail = localStorage.getItem("userEmail");
 
 document.querySelector(".contact-form").addEventListener("submit", async (e) => {
   e.preventDefault(); 
 
   const message = document.getElementById("contact-message").value.trim();
-  const userEmail = localStorage.getItem("userEmail");
-
-  if (!userEmail) return showToast("⚠️ Please log in first", true);
-  if (!message) return showToast("✉️ Please enter a message", true);
+  if (!userEmail) return showToast("Please log in first", true);
+  if (!message) return showToast("Please enter a message", true);
 
   try {
     showLoading(true); 
@@ -387,16 +386,16 @@ document.querySelector(".contact-form").addEventListener("submit", async (e) => 
     showLoading(false); 
 
     if (response.ok && data.success) {
-      showToast("✅ Message sent successfully!");
+      showToast("Message sent successfully!");
       document.querySelector(".contact-form").reset();
       document.getElementById("contactModal").style.display = "none";
     } else {
-      showToast(data.error || "❌ Failed to send message", true);
+      showToast(data.error || "Failed to send message", true);
     }
   } catch (err) {
     showLoading(false);
     console.error("Contact form error:", err);
-    showToast("🚫 Something went wrong. Try again later.", true);
+    showToast("Something went wrong. Try again later.", true);
   }
 });
 
@@ -491,12 +490,12 @@ document.addEventListener("DOMContentLoaded", () => {
             await stripe.redirectToCheckout({ sessionId: session.id });
           } else {
             console.error("Stripe session error:", session);
-            showToast("❌ Unable to start payment. Try again.", true);
+            showToast("Unable to start payment. Try again.", true);
           }
         } catch (err) {
           showLoading(false);
           console.error("Payment error:", err);
-          showToast("❌ Payment failed.", true);
+          showToast("Payment failed.", true);
         }
 
       } else if (paymentMethod === "cash") {
@@ -517,7 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const data = await response.json();
           showLoading(false);
           if (data.success) {
-            showToast("✅ Booking confirmed! Please pay in cash at the resort.");
+            showToast("Booking confirmed! Please pay in cash at the resort.");
             bookingModal.style.display = "none";
             showLoading(true);
 
@@ -525,16 +524,58 @@ document.addEventListener("DOMContentLoaded", () => {
               window.location.href = `/Client_Side/html/profilepage.html`;
             }, 2000);
           } else {
-            showToast("❌ Failed to create cash booking.", true);
+            showToast("Failed to create cash booking.", true);
           }
 
         } catch (err) {
           showLoading(false);
           console.error("Cash booking error:", err);
-          showToast("❌ Error creating cash booking.", true);
+          showToast("Error creating cash booking.", true);
         }
       }
     });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("authToken");
+  const userEmail = localStorage.getItem("userEmail");
+  const profilePic = document.getElementById("profilePic");
+  const profileIcon = document.getElementById("profileIcon");
+
+  if (token && userEmail) {
+    try {
+      const res = await fetch(`http://localhost:5000/get-user-info?email=${encodeURIComponent(userEmail)}`, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch profile");
+
+      const data = await res.json();
+
+      if (data.profileImage) {
+        profilePic.src = data.profileImage;
+        profilePic.style.display = "block"; 
+        profileIcon.style.display = "none"; 
+      } else {
+        profilePic.style.display = "none"; 
+        profileIcon.style.display = "block"; 
+      }
+
+      // fallback if image fails to load
+      profilePic.onerror = () => {
+        profilePic.style.display = "none";
+        profileIcon.style.display = "block";
+      };
+    } catch (err) {
+      console.error("Error fetching profile picture:", err);
+      profilePic.style.display = "none";
+      profileIcon.style.display = "block";
+    }
+  } else {
+    profilePic.style.display = "none";
+    profileIcon.style.display = "block";
   }
 });
 

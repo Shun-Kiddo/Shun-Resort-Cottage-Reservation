@@ -61,7 +61,7 @@ function showLoading(show) {
 }
 
 document.addEventListener("DOMContentLoaded", fetchBookedUsers);
-
+const deletedBookingss = JSON.parse(localStorage.getItem("deletedBookingss")) || [];
 async function fetchBookedUsers() {
   try {
     const response = await fetch("http://localhost:5000/admin-booked-users");
@@ -76,11 +76,11 @@ async function fetchBookedUsers() {
     }
 
     // Load deleted bookings from localStorage
-    const deletedBookings = JSON.parse(localStorage.getItem("deletedBookings")) || [];
-
+    
+     
     bookingList.forEach(booking => {
       // Skip deleted bookings
-      if (deletedBookings.includes(booking.booking_id)) return;
+      if (deletedBookingss.includes(booking.booking_id)) return;
 
       const card = document.createElement("div");
       card.classList.add("user-card");
@@ -135,7 +135,7 @@ async function fetchBookedUsers() {
       });
 
       const bookingModal = document.getElementById("bookingModal");
-      const closeBookingModalBtn = document.getElementById("closeModal"); // "X" button inside modal
+      const closeBookingModalBtn = document.getElementById("closeModal"); 
 
       closeBookingModalBtn.addEventListener("click", () => {
         bookingModal.style.display = "none";
@@ -155,10 +155,10 @@ async function fetchBookedUsers() {
           `Are you sure you want to delete this booking for ${booking.c_full_name}?`,
           () => {
             // Save in localStorage
-            let deleted = JSON.parse(localStorage.getItem("deletedBookings")) || [];
+            let deleted = JSON.parse(localStorage.getItem("deletedBookingss")) || [];
             if (!deleted.includes(booking.booking_id)) {
               deleted.push(booking.booking_id);
-              localStorage.setItem("deletedBookings", JSON.stringify(deleted));
+              localStorage.setItem("deletedBookingss", JSON.stringify(deleted));
             }
 
             // Remove from UI

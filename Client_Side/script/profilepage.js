@@ -187,19 +187,19 @@ document.querySelector(".changePassword-form").addEventListener("submit", async 
 
     if (!email) {
       showLoading(false);
-      showToast("⚠️ No user logged in.", true);
+      showToast("No user logged in.", true);
       return;
     }
 
     if (currentPassword === newPassword) {
       showLoading(false);
-      showToast("⚠️ New password must be different from the current password.", true);
+      showToast("New password must be different from the current password.", true);
       return;
     }
 
     if (newPassword !== confirmPassword) {
       showLoading(false);
-      showToast("⚠️ New password and confirm password do not match.", true);
+      showToast("New password and confirm password do not match.", true);
       return;
     }
 
@@ -211,7 +211,7 @@ document.querySelector(".changePassword-form").addEventListener("submit", async 
 
     if (!response.ok) {
       showLoading(false);
-      showToast("❌ Server Error. Try again later.", true);
+      showToast("Server Error. Try again later.", true);
       return;
     }
 
@@ -225,7 +225,7 @@ document.querySelector(".changePassword-form").addEventListener("submit", async 
   } catch (error) {
     showLoading(false);
     console.error("Error:", error);
-    showToast("❌ Something went wrong. Please try again.", true);
+    showToast("Something went wrong. Please try again.", true);
   }
 });
 
@@ -340,7 +340,7 @@ async function fetchUserBookings(userId) {
 
     bookings.forEach(booking => {
       const tr = document.createElement("tr");
-      tr.setAttribute("data-id", booking.booking_id); // Important for localStorage delete
+      tr.setAttribute("data-id", booking.booking_id);
 
       let actionBtnHTML = "";
       // If CASH + confirmed ➜ Show Cancel button
@@ -388,13 +388,13 @@ async function fetchUserBookings(userId) {
 
               if (data.success) {
                 btn.closest("tr").remove();
-                showToast("✅ Booking cancelled successfully!");
+                showToast("Booking cancelled successfully!");
               } else {
-                showToast("❌ Failed to cancel booking.", true);
+                showToast("Failed to cancel booking.", true);
               }
             } catch (err) {
               showLoading(false);
-              showToast("❌ Error cancelling booking.", true);
+              showToast("Error cancelling booking.", true);
               console.error(err);
             }
           },
@@ -424,7 +424,7 @@ async function fetchUserBookings(userId) {
 
             // Remove from UI
             row.remove();
-            showToast("🗑️ Booking deleted.");
+            showToast("Booking deleted.");
             location.reload();
           },
           onNo: () => {}

@@ -28,11 +28,8 @@ async function fetchRevenue() {
   try {
     const res = await fetch("http://localhost:5000/admin-revenue");
     const data = await res.json();
-
-    // Total revenue
     document.getElementById("totalRevenue").textContent = parseFloat(data.totalRevenue).toLocaleString();
 
-    // Prepare monthly chart
     const months = data.monthly.map(m => m.month);
     const revenue = data.monthly.map(m => m.revenue);
 
@@ -63,7 +60,7 @@ async function fetchRevenue() {
 
   } catch (err) {
     console.error(err);
-    showToast("❌ Failed to load revenue data", true);
+    showToast("Failed to load revenue data", true);
   } finally {
     showLoading(false);
   }
