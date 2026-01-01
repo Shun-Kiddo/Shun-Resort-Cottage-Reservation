@@ -48,13 +48,12 @@ document.querySelector("form").addEventListener("submit", async (e) => {
     });
 
     const result = await response.json();
-    s
-
+    
   if (response.ok) {
     localStorage.setItem("authToken", result.token);
     localStorage.setItem("userEmail", result.user.email);
     localStorage.setItem("userId", result.user.id);
-    document.querySelector("form").reset();
+    document.querySelector("form").reset(); 
     showLoading(true);
     showToast("Login successful! Redirecting...");
     

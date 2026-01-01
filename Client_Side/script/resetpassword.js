@@ -60,7 +60,7 @@ async function resetPassword() {
       showToast("Password reset successful! Redirecting...");
       localStorage.removeItem("resetEmail");
       setTimeout(() => {
-        window.location.href = "/Client_Side/auth/loginpage.html";
+        window.location.href = "/Client_Side/auth/index.html";
       }, 1000);
     } else {
       showToast(result.error || "Failed to reset password.", true);

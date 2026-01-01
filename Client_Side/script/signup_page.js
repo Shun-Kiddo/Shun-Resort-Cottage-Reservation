@@ -51,7 +51,7 @@ document.querySelector("form").addEventListener("submit", async (e) => {
         showToast("Sign Up successful!");
         setTimeout(() => {
           showLoading(false);
-          window.location.href = "/Client_Side/auth/loginpage.html";
+          window.location.href = "/Client_Side/auth/index.html";
         }, 2000);
       } else {
         alert("Error: " + data.error);

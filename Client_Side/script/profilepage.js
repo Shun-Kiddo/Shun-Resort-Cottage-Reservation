@@ -313,7 +313,7 @@ document.getElementById("logoutBtn").addEventListener("click", () => {
       showLoading(true);
       setTimeout(() => {
         showLoading(false); 
-        window.location.href = "/Client_Side/auth/loginpage.html";
+        window.location.href = "/Client_Side/auth/index.html";
         showToast("Thank Youu!...");
       }, 2000);
     },

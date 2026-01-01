@@ -25,7 +25,7 @@ links.forEach(link => {
 const token = localStorage.getItem("authToken");
 
 if (!token) {
-  window.location.replace("/Client_Side/auth/loginpage.html");
+  window.location.replace("/Client_Side/auth/index.html");
 } else {
   fetch("http://localhost:5000/verifyToken", {
     method: "GET",
@@ -45,7 +45,7 @@ if (!token) {
   })
   .catch(err => {
     localStorage.removeItem("authToken");
-    window.location.replace("/Client_Side/auth/loginpage.html");
+    window.location.replace("/Client_Side/auth/index.html");
   });
 }
 
